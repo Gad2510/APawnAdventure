@@ -5,18 +5,20 @@ using UnityEngine;
 
 public class MapManager : MonoBehaviour
 {
-
     public Object obj_tilePrefab;
+    public float sigma = 25;
+    public float fx = 29.4f;
+    public float fy = 39.3f;
 
 
     private readonly Vector3 v3_origin = new Vector3(0.5f, 0, 0.5f);
 
-    public Dictionary<Vector2Int,MeshRenderer> Map { get; private set; }
+    public Dictionary<Vector2Int,Tile> Map { get; private set; }
 
     // Start is called before the first frame update
     void Start()
     {
-        Map = new Dictionary<Vector2Int, MeshRenderer>();
+        Map = new Dictionary<Vector2Int, Tile>();
         obj_tilePrefab = Resources.Load("Prefabs/MovementTile");
         GenerateMap(20);
         
@@ -25,7 +27,10 @@ public class MapManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        foreach(Tile t in Map.Values)
+        {
+            t.SetTempeture(Formula(t.v2i_coord));
+        }
     }
 
     private void GenerateMap(int _mapSize)
@@ -35,10 +40,14 @@ public class MapManager : MonoBehaviour
         {
             for(int y = 0; y < _mapSize; y++)
             {
-                GameObject go = Instantiate(obj_tilePrefab, gameObject.transform) as GameObject;
-                Map.Add(new Vector2Int(x, y), go.GetComponent<MeshRenderer>());
+                Tile go = (Instantiate(obj_tilePrefab, gameObject.transform) as GameObject).GetComponent<Tile>();
+                Vector2Int coord = new Vector2Int(x, y);
+                Map.Add(coord, go);
                 go.transform.position = new Vector3(v3_origin.x+x, 0.2f, v3_origin.z+y);
                 go.tag = TilesManager.UNTAGGED;
+
+                go.SetCoordinate(coord);
+                go.SetTempeture(Formula(coord));
             }
         }
     }
@@ -50,9 +59,9 @@ public class MapManager : MonoBehaviour
 
         Map[_pos].enabled = _enable;
 
-        Map[_pos].material.color = _col;
+        Map[_pos].mr_renderer.material.color = _col;
 
-        return Map[_pos];
+        return Map[_pos].mr_renderer;
     }
     public Vector2Int GetTileCoordinate(MeshRenderer _tile)
     {
@@ -60,4 +69,21 @@ public class MapManager : MonoBehaviour
         return coord;
     }
     
+    private float Formula(Vector2 coord)
+    {
+        //Onda de Gabor Bidimensional
+        /*float exp = Mathf.Exp(-((Mathf.Pow(coord.x , 2)) + (Mathf.Pow(coord.y ,2))) / (2 * Mathf.Pow(sigma ,2)));
+        float trian = Mathf.Cos(2 * Mathf.PI * frecuency * ((coord.x * Mathf.Cos(orientation)) + (coord.y * Mathf.Sin(orientation))) + fase);
+
+        return exp * trian;*/
+
+        //Ruido aleatorio
+        float t = Time.time/10;
+
+        //coord = new Vector2(coord.x+t, coord.y+t);
+        coord = new Vector2(Mathf.Sin((coord.x) + t), Mathf.Cos((coord.y) + t));
+        float exp = Mathf.Exp(((Mathf.Pow(coord.x , 2)) + (Mathf.Pow(coord.y ,2))) / (2 * Mathf.Pow(sigma ,2)));
+        float trian =  Mathf.Cos((coord.y*fy)) * Mathf.Sin((coord.x*fx));
+        return (exp * trian)*5;
+    }
 }
