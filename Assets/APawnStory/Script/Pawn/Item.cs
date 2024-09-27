@@ -1,16 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class Item : Pawn
+namespace Betadron.Pawn
 {
-    [SerializeField]
-    private int itemID;
-
-    public int Collect()
+    public class Item : Pawn
     {
-        gameObject.SetActive(false);
-        return itemID;
-    }
+        [SerializeField]
+        private int itemID;
 
+        public override object OnSelect()
+        {
+            gameObject.SetActive(false);
+            return itemID;
+        }
+
+    }
 }

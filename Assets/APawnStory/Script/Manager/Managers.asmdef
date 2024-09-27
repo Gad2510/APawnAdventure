@@ -1,0 +1,18 @@
+{
+    "name": "Managers",
+    "rootNamespace": "Betadron.Managers",
+    "references": [
+        "GUID:44bf43673183e6a468bd400ea4caf3b2",
+        "GUID:e99272e5b54fa75479942d4abfc1e8ad",
+        "GUID:c2b2daead0fe07b488c0b32a31f18191"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

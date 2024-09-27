@@ -1,8 +1,13 @@
 using UnityEngine;
 
-public interface IPlayable
+namespace Betadron.Interfaces
 {
-    bool IsControllable { get; set; }
-    bool IsMovable { get; set; }
-    bool CanAttack { get; set; } 
+    public interface IPlayable
+    {
+        bool IsControllable { get; set; }
+        bool IsMovable { get; set; }
+        bool CanAttack { get; set; }
+
+        Vector2Int GetCoordinates();
+    }
 }

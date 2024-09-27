@@ -1,0 +1,20 @@
+{
+    "name": "Player",
+    "rootNamespace": "Betadron.Player",
+    "references": [
+        "GUID:44bf43673183e6a468bd400ea4caf3b2",
+        "GUID:6a4f9f99ff6210547a9b755ba86ff934",
+        "GUID:65432c22b0f5474469e90aced023d7ce",
+        "GUID:d7b434f1253e95448a07a408d1693e69",
+        "GUID:c2b2daead0fe07b488c0b32a31f18191"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

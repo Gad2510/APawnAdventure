@@ -1,33 +1,39 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class Pawn : MonoBehaviour, IInteractable
+using Betadron.Interfaces;
+using Betadron.Managers;
+namespace Betadron.Pawn
 {
-    public Vector2Int Coordinates { set; get; }
-
-    protected void Awake()
+    public class Pawn : MonoBehaviour, IInteractable
     {
-        ((GameModeGameplay)GameManager.gm_gamemode).CombatManager.AddCharacter(this);
-    }
-    protected virtual void Start()
-    {
-        ChangeCordinates(Vector3.zero);
+        /*
+         Clase base de todos los elementos interactuables del juego
+         */
+        public Vector2Int Coordinates { set; get; }
 
-    }
+        protected void Awake()
+        {
+            ((GameModeGameplay)GameManager.gm_gamemode).CombatManager.AddCharacter(this);
+        }
+        protected virtual void Start()
+        {
+            UpdateSelected(0);
+        }
 
-    public virtual void OnSelect()
-    {
-        return;
-    }
+        public virtual object OnSelect()
+        {
+            return 0;
+        }
 
-    private void OnDisable()
-    {
-        ((GameModeGameplay)GameManager.gm_gamemode).CombatManager.RemoveCharacter(this);
-    }
-
-    public virtual void ChangeCordinates(Vector3 _steps)
-    {
-        Coordinates = new Vector2Int((int)transform.position.x, (int)transform.position.z);
+        private void OnDisable()
+        {
+            ((GameModeGameplay)GameManager.gm_gamemode).CombatManager.RemoveCharacter(this);
+        }
+        //Actualiza las cordenas actuales del objeto 
+        public void UpdateSelected(object var)
+        {
+            Coordinates = new Vector2Int((int)transform.position.x, (int)transform.position.z);
+        }
     }
 }

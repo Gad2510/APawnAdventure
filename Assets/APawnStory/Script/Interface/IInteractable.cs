@@ -2,9 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IInteractable
+namespace Betadron.Interfaces
 {
-    public Vector2Int Coordinates { get; set; }
+    public interface IInteractable
+    {
+        public Vector2Int Coordinates { get; set; }
+        public object OnSelect();
+        public void UpdateSelected(object var);
 
-    public void OnSelect();
+        
+    }
 }
