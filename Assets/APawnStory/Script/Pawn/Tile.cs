@@ -36,6 +36,7 @@ namespace Betadron.Pawn
         {
             mr_renderer = GetComponent<MeshRenderer>();
             gameObject.tag = "Untagged";
+            mr_renderer.enabled = false;
         }
         //Cuando sea seleccionado regresa referencia al renderer
         public object OnSelect()
@@ -46,7 +47,7 @@ namespace Betadron.Pawn
         public void UpdateSelected(object var)
         {
             f_tempeture = Mathf.Clamp01((float)var);
-            mr_renderer.material.color = g_heatMap.Evaluate(f_tempeture);
+           // mr_renderer.material.color = g_heatMap.Evaluate(f_tempeture);
         }
     }
 }

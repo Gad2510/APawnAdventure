@@ -12,12 +12,9 @@ namespace Betadron.Pawn
          */
         public Vector2Int Coordinates { set; get; }
 
-        protected void Awake()
-        {
-            ((GameModeGameplay)GameManager.gm_gamemode).CombatManager.AddCharacter(this);
-        }
         protected virtual void Start()
         {
+            ((GameModeGameplay)GameManager.gm_gamemode).CombatManager.AddCharacter(this);
             UpdateSelected(0);
         }
 
