@@ -2,17 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameMode : MonoBehaviour
+public abstract class GameMode : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    //Clase encargada de controles de juego asi como el game flow
+    //Esta solo contiene cualquier tipo de funcion que se requiera compartir entre modos:
+    //  -Empezar la escena
+    //  -Cargar UI 
 
-    // Update is called once per frame
-    void Update()
+    protected virtual void Awake()
     {
-        
+        StartScene();
     }
+    //Carga elementos de la escena
+    private void StartScene()
+    {
+        LoadUI();
+    }
+    //Carga el UI
+    protected abstract void LoadUI();
+
 }
