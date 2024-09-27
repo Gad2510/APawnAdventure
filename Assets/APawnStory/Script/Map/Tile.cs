@@ -15,6 +15,8 @@ public class Tile : MonoBehaviour
     private void Awake()
     {
         mr_renderer = GetComponent<MeshRenderer>();
+
+        gameObject.tag = TilesManager.UNTAGGED;
     }
 
     public void SetTempeture(float amount)

@@ -27,7 +27,7 @@ public class GameModeGameplay : GameMode
 
     public TilesManager TilesManager { private set; get; }
     public MapManager MapManager { private set; get; }
-    public CombatManager CombatManager { private set; get; }
+    public CharactersManager CombatManager { private set; get; }
     public IInteractable Target { get; set; }
     public Stats Stats { get; set; }
     public GameState Phase { get; set; }
@@ -40,7 +40,7 @@ public class GameModeGameplay : GameMode
         //Inicializar managers
         TilesManager = gameObject.AddComponent<TilesManager>();
         MapManager = gameObject.AddComponent<MapManager>();
-        CombatManager = gameObject.AddComponent<CombatManager>();
+        CombatManager = gameObject.AddComponent<CharactersManager>();
         //Asignar estado inicial del juego
         Phase = GameState.none;
 
