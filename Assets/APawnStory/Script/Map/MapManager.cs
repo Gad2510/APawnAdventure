@@ -81,10 +81,11 @@ public class MapManager : MonoBehaviour
         Map[_pos].mr_renderer.material.color = _col;
 
         return Map[_pos].mr_renderer;
-    }
+    }//Read
+    //Obtiene la referencia de las coordenas por el mesh renderer del objeto
     public Vector2Int GetTileCoordinate(MeshRenderer _tile)
     {
-        Vector2Int coord= Map.FirstOrDefault((x) => x.Value == _tile).Key;
+        Vector2Int coord= Map.FirstOrDefault((x) => x.Value.mr_renderer == _tile).Key;
         return coord;
     }
     //Funcion Objetivo a evaluar con el tiempo
@@ -96,6 +97,6 @@ public class MapManager : MonoBehaviour
         coord = new Vector2(Mathf.Sin((coord.x) + t), Mathf.Cos((coord.y) + t));
         float exp = Mathf.Exp(((Mathf.Pow(coord.x , 2)) + (Mathf.Pow(coord.y ,2))) / (2 * Mathf.Pow(sigma ,2)));
         float trian =  Mathf.Cos((coord.y*fy)) * Mathf.Sin((coord.x*fx));
-        return (exp * trian)*5;
+        return (exp * trian);
     }
 }

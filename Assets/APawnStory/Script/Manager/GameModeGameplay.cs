@@ -8,7 +8,7 @@ public class GameModeGameplay : GameMode
     //Controla como funcionan los turnos y todos las acciones que puede hacer el jugador
 
     //Estados que hay por cada turno
-    public enum GameState
+    public enum CharacterTurn
     {
         Select, //Elemento seleccionado
         Moving, //Selecciona opcion de mover personaje
@@ -17,9 +17,9 @@ public class GameModeGameplay : GameMode
     }
     //Definicion Delegates que se ejecutan en puntos clave del programa 
     //OnAction:- Acciones a ejecutar cuando se interactua con un objeto interactuable
-    public delegate void OnAction (IInteractable _char,Stats _stats);
+    public delegate void OnAction (IPlayable _char,Stats _stats);
     //OnReturn:- Acciones que se ejecutan al retroceder en los menus o acciones
-    public delegate void OnReturn (GameState _phase);
+    public delegate void OnReturn (CharacterTurn _phase);
 
     //Variables:
     public OnReturn UndoAction; //Conjunto de acciones que se usan al regresar 
@@ -30,7 +30,7 @@ public class GameModeGameplay : GameMode
     public CharactersManager CombatManager { private set; get; }
     public IInteractable Target { get; set; }
     public Stats Stats { get; set; }
-    public GameState Phase { get; set; }
+    public CharacterTurn Phase { get; set; }
 
     public ItemRecord ItemsRecords { get; private set; }
 
@@ -42,7 +42,7 @@ public class GameModeGameplay : GameMode
         MapManager = gameObject.AddComponent<MapManager>();
         CombatManager = gameObject.AddComponent<CharactersManager>();
         //Asignar estado inicial del juego
-        Phase = GameState.none;
+        Phase = CharacterTurn.none;
 
         ItemsRecords =Resources.Load<ItemRecord>("ScriptableObjects/ItemRecord");
 
@@ -58,23 +58,23 @@ public class GameModeGameplay : GameMode
     public void UndoLastAction()
     {
         //Si NO hay un estado asginado
-        if (Phase == GameState.none)
+        if (Phase == CharacterTurn.none)
             return;
 
         UndoAction(Phase);
         //Cambia el estado al anterior
         switch (Phase)
         {
-            case GameState.Select:
-                Phase = GameState.none;
+            case CharacterTurn.Select:
+                Phase = CharacterTurn.none;
                 break;
             //Ambas regresan al menu de seleccion de accion de caracter
-            case GameState.Attacking:
-            case GameState.Moving:
-                Phase = GameState.Select;
+            case CharacterTurn.Attacking:
+            case CharacterTurn.Moving:
+                Phase = CharacterTurn.Select;
                 break;
             default:
-                Phase = GameState.none;
+                Phase = CharacterTurn.none;
                 break;
         }
     }

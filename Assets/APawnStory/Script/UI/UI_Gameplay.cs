@@ -29,7 +29,7 @@ public class UI_Gameplay : MonoBehaviour
             {
                 gm_gamemode.TilesManager.SetMovementTiles(gm_gamemode.Target.Coordinates, gm_gamemode.Stats.int_movement);
                 go_charMenu.SetActive(false);
-                gm_gamemode.Phase = GameModeGameplay.GameState.Moving;
+                gm_gamemode.Phase = GameModeGameplay.CharacterTurn.Moving;
             }
         });
 
@@ -40,7 +40,7 @@ public class UI_Gameplay : MonoBehaviour
                 gm_gamemode.CombatManager.CleanCharacterInRange();
                 gm_gamemode.TilesManager.SetAttackTiles(gm_gamemode.Target.Coordinates);
                 go_charMenu.SetActive(false);
-                gm_gamemode.Phase = GameModeGameplay.GameState.Attacking;
+                gm_gamemode.Phase = GameModeGameplay.CharacterTurn.Attacking;
             }
         });
     }
@@ -57,7 +57,7 @@ public class UI_Gameplay : MonoBehaviour
 
         gm_gamemode.UndoAction -= CloseCharacterMenu;
     }
-    public void OpenCharacterMenu(IInteractable _char, Stats _stats)
+    public void OpenCharacterMenu(IPlayable _char, Stats _stats)
     {
         //Activate Character Menu
         go_charMenu.SetActive(true);
@@ -70,11 +70,11 @@ public class UI_Gameplay : MonoBehaviour
 
     }
 
-    public void CloseCharacterMenu(GameModeGameplay.GameState _phase)
+    public void CloseCharacterMenu(GameModeGameplay.CharacterTurn _phase)
     {
-        if (_phase == GameModeGameplay.GameState.Moving || _phase == GameModeGameplay.GameState.Attacking)
+        if (_phase == GameModeGameplay.CharacterTurn.Moving || _phase == GameModeGameplay.CharacterTurn.Attacking)
             go_charMenu.SetActive(true);
-        else if (_phase == GameModeGameplay.GameState.Select)
+        else if (_phase == GameModeGameplay.CharacterTurn.Select)
             go_charMenu.SetActive(false);
     }
 }

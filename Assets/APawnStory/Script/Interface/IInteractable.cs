@@ -4,9 +4,7 @@ using UnityEngine;
 
 public interface IInteractable
 {
-    public bool IsMovable { get; set; }
-    public bool CanAttack { get; set; }
     public Vector2Int Coordinates { get; set; }
 
-    public void InitObject();
+    public void OnSelect();
 }

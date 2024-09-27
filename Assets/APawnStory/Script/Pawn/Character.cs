@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Character : Pawn
+public class Character : Pawn,IPlayable
 {
     private Movement scp_move;
     private Health scp_health;
@@ -12,6 +12,8 @@ public class Character : Pawn
     private Stats s_stats;
 
     public bool IsControllable { get; set; }
+    public bool IsMovable { get; set; }
+    public bool CanAttack { get; set; }
 
     public Stats CharacterStats
     {

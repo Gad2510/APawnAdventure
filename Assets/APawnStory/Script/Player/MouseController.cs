@@ -58,10 +58,10 @@ public class MouseController : MonoBehaviour
         //Get the tile to move character
         if (scp_charRef != null && _other.CompareTag("Tile"))
         {
-            if (gm_gamemode.Phase == GameModeGameplay.GameState.Moving)
+            if (gm_gamemode.Phase == GameModeGameplay.CharacterTurn.Moving)
                 scp_charRef.ChangeCordinates(_other.transform.position);
 
-            gm_gamemode.Phase = GameModeGameplay.GameState.none;
+            gm_gamemode.Phase = GameModeGameplay.CharacterTurn.none;
         }
     }
     private void OnClickCharacter(Collider _other)
@@ -70,20 +70,20 @@ public class MouseController : MonoBehaviour
         {
             Character hitCharacter = _other.GetComponent<Character>();
             //Get the character
-            if (gm_gamemode.Phase == GameModeGameplay.GameState.none)
+            if (gm_gamemode.Phase == GameModeGameplay.CharacterTurn.none)
             {
                 scp_charRef = hitCharacter;
                 gm_gamemode.SelectCharacter.Invoke(scp_charRef, scp_charRef.CharacterStats);
-                gm_gamemode.Phase = GameModeGameplay.GameState.Select;
+                gm_gamemode.Phase = GameModeGameplay.CharacterTurn.Select;
             }
             //Check if its posible to attack
-            else if (gm_gamemode.Phase == GameModeGameplay.GameState.Attacking &&  //Check status of gamemode
+            else if (gm_gamemode.Phase == GameModeGameplay.CharacterTurn.Attacking &&  //Check status of gamemode
                 gm_gamemode.CombatManager.LookForCharacter(hitCharacter.Coordinates)) //Check if character is on range
             {
                 scp_charRef.CanAttack = false;
                 hitCharacter.GetDamage(scp_charRef);
                 gm_gamemode.TilesManager.HideTiles();
-                gm_gamemode.Phase = GameModeGameplay.GameState.none;
+                gm_gamemode.Phase = GameModeGameplay.CharacterTurn.none;
             }
 
         }
@@ -94,12 +94,12 @@ public class MouseController : MonoBehaviour
         if (_other.gameObject.CompareTag("Item"))
         {
             Item hitItem = _other.GetComponent<Item>();
-            if (gm_gamemode.Phase == GameModeGameplay.GameState.Attacking &&  //Check status of gamemode
+            if (gm_gamemode.Phase == GameModeGameplay.CharacterTurn.Attacking &&  //Check status of gamemode
                     gm_gamemode.CombatManager.LookForCharacter(hitItem.Coordinates)) //Check if item is on range
             {
                 scp_charRef.AddItem(hitItem.Collect());
                 gm_gamemode.TilesManager.HideTiles();
-                gm_gamemode.Phase = GameModeGameplay.GameState.none;
+                gm_gamemode.Phase = GameModeGameplay.CharacterTurn.none;
             }
         }
         
