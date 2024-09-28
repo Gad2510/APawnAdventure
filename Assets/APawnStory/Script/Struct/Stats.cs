@@ -18,6 +18,7 @@ namespace Betadron.Struct
         public int defence;
         public int dexerity;
 
+        public bool isPlayer;
         public float GetHealthPorcentage()
         {
             return (float)int_health / (float)int_maxHealth;

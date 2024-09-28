@@ -28,4 +28,6 @@ namespace Betadron.Objects
         public Texture img;
 
     }
+
+    
 }

@@ -42,7 +42,7 @@ namespace Betadron.UI
             {
                 if (gm_gamemode.Target != null)
                 {
-                    gm_gamemode.CombatManager.CleanCharacterInRange();
+                    gm_gamemode.CharacterManager.CleanCharacterInRange();
                     gm_gamemode.TilesManager.SetAttackTiles(gm_gamemode.Target.GetCoordinates());
                     go_charMenu.SetActive(false);
                     gm_gamemode.Phase = GameModeGameplay.CharacterTurn.Attacking;

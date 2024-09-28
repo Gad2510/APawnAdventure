@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Betadron.Managers;
 using Betadron.Interfaces;
 using Betadron.Struct;
 namespace Betadron.Pawn
@@ -21,10 +22,17 @@ namespace Betadron.Pawn
         [SerializeField]
         private Stats s_stats;
 
-        public bool IsControllable { get; set; }
+        public bool IsControllable
+        {
+            get { return s_stats.isPlayer; }
+            set
+            {
+                s_stats.isPlayer = value;
+            }
+        }
         public bool IsMovable { get; set; }
         public bool CanAttack { get; set; }
-
+        public bool EndPhase { get; set; }
         public Stats CharacterStats
         {
             get
@@ -35,16 +43,22 @@ namespace Betadron.Pawn
 
         protected override void Start()
         {
+            base.Start();
+            ((GameModeGameplay)GameManager.gm_gamemode).CharacterManager.AddCharacter(this);
             IsMovable = true;
             Movement = gameObject.GetComponent<Movement>();
             Health = gameObject.GetComponent<Health>();
             Inventory = gameObject.GetComponent<Inventory>();
-            TurnInit();
-            base.Start();
         }
-        //Inicio de turno se reinician stats
-        public void TurnInit()
+        protected void OnDisable()
         {
+            ((GameModeGameplay)GameManager.gm_gamemode).CharacterManager.RemoveCharacter(this);
+        }
+
+        //Inicio de turno se reinician stats
+        public void StartTurn()
+        {
+            EndPhase = false;
             s_stats.int_movement = s_stats.int_maxMovement;
             s_stats.int_stamina = s_stats.int_maxStamina;
             CanAttack = true;
@@ -59,6 +73,11 @@ namespace Betadron.Pawn
         public override object OnSelect()
         {
             return Health;
+        }
+
+        public virtual void AutomaticActions()
+        {
+            return;
         }
     }
 }

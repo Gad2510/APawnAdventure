@@ -99,7 +99,7 @@ namespace  Betadron.Managers
                     {
                         Vector2Int pos = new Vector2Int(x - middleX, y - middleX) + _origin;
                         SetTileToType(pos, Color.yellow, UNTAGGED);
-                        gm_gamemode.CombatManager.AddCharacterInRange(pos);
+                        gm_gamemode.CharacterManager.AddCharacterInRange(pos);
                     }
                 }
             }

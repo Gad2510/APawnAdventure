@@ -15,9 +15,11 @@ namespace Betadron.Managers
         //Estados que hay por cada turno
         public enum CharacterTurn
         {
+            StartTurn,
             Select, //Elemento seleccionado
             Moving, //Selecciona opcion de mover personaje
             Attacking, //Selecciona opcion de ataque
+            EndTurn,
             none
         }
         //Definicion Delegates que se ejecutan en puntos clave del programa 
@@ -30,14 +32,17 @@ namespace Betadron.Managers
         public OnReturn UndoAction; //Conjunto de acciones que se usan al regresar 
         public OnAction SelectCharacter; //Conjunto de acciones cuando se selecciona un caracter
 
+        private bool IsPlayerTurn { get; set; } 
+
         public TilesManager TilesManager { private set; get; }
         public MapManager MapManager { private set; get; }
-        public CharactersManager CombatManager { private set; get; }
+        public CharactersManager CharacterManager { private set; get; }
         public IPlayable Target { get; set; }
         public Stats Stats { get; set; }
         public CharacterTurn Phase { get; set; }
 
         public ItemRecord ItemsRecords { get; private set; }
+        public GameObject UI_Characters { get; set; }
 
         // Start is called before the first frame update
         protected override void Awake()
@@ -45,7 +50,7 @@ namespace Betadron.Managers
             //Inicializar managers
             TilesManager = gameObject.AddComponent<TilesManager>();
             MapManager = gameObject.AddComponent<MapManager>();
-            CombatManager = gameObject.AddComponent<CharactersManager>();
+            CharacterManager = gameObject.AddComponent<CharactersManager>();
             //Asignar estado inicial del juego
             Phase = CharacterTurn.none;
 
@@ -53,9 +58,17 @@ namespace Betadron.Managers
 
             base.Awake();
         }
+
+        protected void Start()
+        {
+            StartTurn();
+            
+        }
         //PENDIENTE
         protected override void LoadUI()
         {
+            Object prefb = Resources.Load<GameObject>("Prefabs/UICharacters");
+            UI_Characters=Instantiate(prefb)as GameObject;
             return;
         }
 
@@ -83,7 +96,28 @@ namespace Betadron.Managers
                     break;
             }
         }
-
-
+        public void StartTurn()
+        {
+            print("Start Turn");
+            //player start input
+            IsPlayerTurn = true;
+            CharacterManager.InitCharacters();
+            PlayerTurn();
+        }
+        public void PlayerTurn()
+        {
+            print("Player turn");
+            EnemyTurn();
+        }
+        public void EnemyTurn()
+        {
+            print("Enemy turn");
+            StartCoroutine(CharacterManager.ExecuteNPCActions());
+        }
+        public void EndTurn()
+        {
+            print("EndTurn turn");
+            StartTurn();
+        }
     }
 }

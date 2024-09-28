@@ -14,7 +14,6 @@ namespace Betadron.Pawn
 
         protected virtual void Start()
         {
-            ((GameModeGameplay)GameManager.gm_gamemode).CombatManager.AddCharacter(this);
             UpdateSelected(0);
         }
 
@@ -23,10 +22,7 @@ namespace Betadron.Pawn
             return 0;
         }
 
-        private void OnDisable()
-        {
-            ((GameModeGameplay)GameManager.gm_gamemode).CombatManager.RemoveCharacter(this);
-        }
+        
         //Actualiza las cordenas actuales del objeto 
         public void UpdateSelected(object var)
         {

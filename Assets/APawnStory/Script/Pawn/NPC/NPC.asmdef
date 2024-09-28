@@ -1,0 +1,16 @@
+{
+    "name": "NPC",
+    "rootNamespace": "Betadron.Pawn.NPC",
+    "references": [
+        "GUID:65432c22b0f5474469e90aced023d7ce"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

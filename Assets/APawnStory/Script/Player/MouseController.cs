@@ -82,7 +82,7 @@ namespace Betadron.Player
                 }
                 //Check if its posible to attack
                 else if (gm_gamemode.Phase == GameModeGameplay.CharacterTurn.Attacking &&  //Check status of gamemode
-                    gm_gamemode.CombatManager.LookForCharacter(hitCharacter.Coordinates)) //Check if character is on range
+                    gm_gamemode.CharacterManager.LookForCharacter(hitCharacter.Coordinates)) //Check if character is on range
                 {
                     scp_charRef.CanAttack = false;
                     ((Health)hitCharacter.OnSelect()).GetDamage(scp_charRef);
@@ -92,14 +92,14 @@ namespace Betadron.Player
 
             }
         }
-
+        //Checa si es un objeto para agregarlo al inventario
         private void OnClickItem(Collider _other)
         {
             if (_other.gameObject.CompareTag("Item"))
             {
                 Item hitItem = _other.GetComponent<Item>();
                 if (gm_gamemode.Phase == GameModeGameplay.CharacterTurn.Attacking &&  //Check status of gamemode
-                        gm_gamemode.CombatManager.LookForCharacter(hitItem.Coordinates)) //Check if item is on range
+                        gm_gamemode.CharacterManager.LookForCharacter(hitItem.Coordinates)) //Check if item is on range
                 {
                     scp_charRef.Inventory.AddItem((int)hitItem.OnSelect());
                     gm_gamemode.TilesManager.HideTiles();

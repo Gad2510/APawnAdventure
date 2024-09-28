@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
+using Betadron.Managers;
 namespace Betadron.Pawn
 {
     public class Health : MonoBehaviour
@@ -12,9 +13,9 @@ namespace Betadron.Pawn
         private MeshRenderer mr_selfRender;
 
         // Start is called before the first frame update
-        void Awake()
+        void Start()
         {
-            Transform ui_canvas = GameObject.Find("UICharacters").transform;
+            Transform ui_canvas = ((GameModeGameplay)GameManager.gm_gamemode).UI_Characters.transform;
             GameObject go = Instantiate(Resources.Load("Prefabs/sl_character"), ui_canvas) as GameObject;
             scp_char = gameObject.GetComponent<Character>();
             sl_healthBar = go.GetComponent<Slider>();
