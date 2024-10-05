@@ -5,9 +5,12 @@ namespace Betadron.Pawn.NPC
 {
     public class Herbivore : NPC
     {
+
+
         public override void AutomaticActions()
         {
-            EndPhase = true;
+            EndPhase = false;
+            base.AutomaticActions();
         }
     }
 }

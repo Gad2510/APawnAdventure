@@ -16,12 +16,15 @@ namespace Betadron.Managers
         private List<IPlayable> lst_interactable;
         //Lista de Caracteres en rango de ataque
         private List<IPlayable> lst_interacInRange;
+        //Lista principalmente obstaculos
+        private List<IAged> lst_noInteractable;
         private void Awake()
         {
             //Inicializa las listas
             lst_interactable = new List<IPlayable>();
             lst_interacInRange = new List<IPlayable>();
             lst_playerChar = new List<IPlayable>();
+            lst_noInteractable = new List<IAged>();
         }
         //Inicia todos los carateres
         public void InitCharacters()
@@ -38,7 +41,7 @@ namespace Betadron.Managers
                 npc.AutomaticActions();
                 yield return new WaitForSeconds(1f);
                 //Espera hasta que el caracter termine su turno
-                yield return new WaitWhile(()=> { return npc.EndPhase; });
+                yield return new WaitWhile(()=> { return !npc.EndPhase; });
                 Debug.Log("NPC finish turn");
             }
             ((GameModeGameplay)GameManager.gm_gamemode).EndTurn();
@@ -53,6 +56,11 @@ namespace Betadron.Managers
 
             else { lst_interactable.Add(_char); }
         }
+        public void AddObject(IAged _obj)
+        {
+            lst_noInteractable.Add(_obj);
+            ((GameModeGameplay)GameManager.gm_gamemode).MapManager.UpdateObstacleTile(_obj.Coordinates);
+        }
         //Delete
         //Acción de quitar Caracter a la lista 
         public void RemoveCharacter(IPlayable _char)
@@ -64,6 +72,11 @@ namespace Betadron.Managers
             if (_char.IsControllable) { lst_playerChar.Remove(_char); }
 
             else { lst_interactable.Remove(_char); }
+        }
+        public void RemoveObject(IAged _obj)
+        {
+            lst_noInteractable.Remove(_obj);
+            ((GameModeGameplay)GameManager.gm_gamemode).MapManager.UpdateObstacleTile(_obj.Coordinates,false);
         }
         //Update
         //Agrega caracteres a la lista de elementos en rango

@@ -34,7 +34,7 @@ namespace Betadron.Player
             {
                 MeshRenderer tile = hit.collider.GetComponent<MeshRenderer>();
                 gm_gamemode.TilesManager.SetCursorTile(tile);
-                v2_currentPos = gm_gamemode.MapManager.GetTileCoordinate(tile);
+                v2_currentPos = gm_gamemode.MapManager.GetCoordinate4Tile(tile);
             }
         }
         private void PerformAction()

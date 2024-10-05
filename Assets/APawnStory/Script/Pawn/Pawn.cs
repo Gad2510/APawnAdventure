@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Betadron.Interfaces;
 using Betadron.Managers;
+using Betadron.Struct;
 namespace Betadron.Pawn
 {
     public class Pawn : MonoBehaviour, IInteractable
@@ -24,9 +25,9 @@ namespace Betadron.Pawn
 
         
         //Actualiza las cordenas actuales del objeto 
-        public void UpdateSelected(object var)
+        public virtual void UpdateSelected(object var)
         {
-            Coordinates = new Vector2Int((int)transform.position.x, (int)transform.position.z);
+            Coordinates = MapFunctions.GetCoordn4Location(transform.position);
         }
     }
 }

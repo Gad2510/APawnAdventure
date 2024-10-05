@@ -37,6 +37,7 @@ namespace Betadron.Managers
         public TilesManager TilesManager { private set; get; }
         public MapManager MapManager { private set; get; }
         public CharactersManager CharacterManager { private set; get; }
+        public SpawnerManager SpawnManager { private set; get; }
         public IPlayable Target { get; set; }
         public Stats Stats { get; set; }
         public CharacterTurn Phase { get; set; }
@@ -51,6 +52,8 @@ namespace Betadron.Managers
             TilesManager = gameObject.AddComponent<TilesManager>();
             MapManager = gameObject.AddComponent<MapManager>();
             CharacterManager = gameObject.AddComponent<CharactersManager>();
+            SpawnManager = gameObject.AddComponent<SpawnerManager>();
+            SpawnManager.InitManager(MapManager);
             //Asignar estado inicial del juego
             Phase = CharacterTurn.none;
 
