@@ -90,8 +90,15 @@ namespace Betadron.Pawn
             f_tempeture = Mathf.Clamp01((float)var);
            // mr_renderer.material.color = g_heatMap.Evaluate(f_tempeture);
         }
-
-        
+        public void OnCreateElement()
+        {
+            return;
+        }
+        //NOT IMPLEMETED
+        public void OnDestroyElement()
+        {
+            return;
+        }
         public Vector2Int GetNavegationCost(INagavable _other, Vector2Int _goal)
         {
             

@@ -8,7 +8,7 @@ namespace Betadron.Interfaces
         bool IsControllable { get; set; }
         bool IsMovable { get; set; }
         bool CanAttack { get; set; }
-        bool EndPhase { get; set; }
+        bool EndPhase { get; }
         Vector2Int GetCoordinates();
 
         public void StartTurn();

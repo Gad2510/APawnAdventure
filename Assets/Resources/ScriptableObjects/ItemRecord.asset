@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lst_items:
   - ID: 0
-    str_name: Test
-    str_description: Testing Item
+    str_name: Baya
+    str_description: Balla que se pude consumir y dar energia
     isStackable: 1
     weigth: 1
     img: {fileID: 0}

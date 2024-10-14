@@ -11,6 +11,7 @@ namespace Betadron.Managers
         CharactersManageR: Clase encargada de guardar una referencia a todos elementos
         con los que se puede interactuar
          */
+        //Lista de caracteres del jugador
         private List<IPlayable> lst_playerChar;
         //Lista de todos los Caracteres
         private List<IPlayable> lst_interactable;
@@ -18,6 +19,8 @@ namespace Betadron.Managers
         private List<IPlayable> lst_interacInRange;
         //Lista principalmente obstaculos
         private List<IAged> lst_noInteractable;
+        //Lista de Elemento no usados
+        private List<IPlayable> lst_notUsedChar;
         private void Awake()
         {
             //Inicializa las listas
@@ -25,26 +28,29 @@ namespace Betadron.Managers
             lst_interacInRange = new List<IPlayable>();
             lst_playerChar = new List<IPlayable>();
             lst_noInteractable = new List<IAged>();
+            lst_notUsedChar = new List<IPlayable>();
         }
         //Inicia todos los carateres
-        public void InitCharacters()
+        public void InitCharactersTurn()
         {
             lst_playerChar.ForEach((x) => x.StartTurn());
             lst_interactable.ForEach((x) => x.StartTurn());
         }
         //Los npc´s hacen todas las acciones automaticas
-        public IEnumerator ExecuteNPCActions()
+        public void ExecuteNPCActions()
         {
-            yield return new WaitForSeconds(1f);
-            foreach (IPlayable npc in lst_interactable)
+            Debug.Log($" Num de enemigos {lst_interactable.Count}");
+            IPlayable npc = lst_interactable.FirstOrDefault((x) => !x.EndPhase);
+            //Si no hay mas npc se termina el turno
+            if (npc == default(IPlayable))
             {
-                npc.AutomaticActions();
-                yield return new WaitForSeconds(1f);
-                //Espera hasta que el caracter termine su turno
-                yield return new WaitWhile(()=> { return !npc.EndPhase; });
-                Debug.Log("NPC finish turn");
+                ((GameModeGameplay)GameManager.gm_gamemode).EndTurn();
+                return;
             }
-            ((GameModeGameplay)GameManager.gm_gamemode).EndTurn();
+
+            npc.AutomaticActions();
+
+            
         }
 
         //CRUD 

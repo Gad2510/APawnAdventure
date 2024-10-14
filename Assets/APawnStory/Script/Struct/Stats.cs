@@ -4,20 +4,23 @@ namespace Betadron.Struct
     public struct Stats
     {
         public string str_name;
-
+        //Vida del caracter
         public int int_maxHealth;
         public int int_health;
-
+        //Energia para realizar una accion
+        //Energia disponible antes de sufrir por hambre
         public int int_maxStamina;
         public int int_stamina;
-
+        //Cantidad de pasos que puede dar en cada turno
         public int int_maxMovement;
         public int int_movement;
-
+        //Poder de ataque
         public int attack;
-        public int defence;
+        //Armadura del caracter
+        public int defense;
+        //Capacidad de esquivar un movimiento 
         public int dexerity;
-
+        //Es un elemento controlado por el jugador
         public bool isPlayer;
         public float GetHealthPorcentage()
         {
@@ -32,6 +35,10 @@ namespace Betadron.Struct
         public void UpdateStamina(int _amount)
         {
             int_stamina -= _amount;
+        }
+        public void UpdateMovement(int _amount)
+        {
+            int_movement -= _amount;
         }
     }
 }

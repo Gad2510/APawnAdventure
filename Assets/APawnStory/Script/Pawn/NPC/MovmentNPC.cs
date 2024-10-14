@@ -5,16 +5,9 @@ namespace Betadron.Pawn.NPC
 {
     public class MovmentNPC : Movement
     {
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
-        void Start()
+        protected override void EndMovement()
         {
-        
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-        
+            base.EndMovement();
         }
     }
 }

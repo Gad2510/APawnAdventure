@@ -63,7 +63,7 @@ namespace Betadron.Player
             if (scp_charRef != null && _other.CompareTag("Tile"))
             {
                 if (gm_gamemode.Phase == GameModeGameplay.CharacterTurn.Moving)
-                    scp_charRef.Movement.MoveCharacter(_other.transform.position);
+                    scp_charRef.MoveComp.MoveCharacter(_other.transform.position);
 
                 gm_gamemode.Phase = GameModeGameplay.CharacterTurn.none;
             }
@@ -101,7 +101,7 @@ namespace Betadron.Player
                 if (gm_gamemode.Phase == GameModeGameplay.CharacterTurn.Attacking &&  //Check status of gamemode
                         gm_gamemode.CharacterManager.LookForCharacter(hitItem.Coordinates)) //Check if item is on range
                 {
-                    scp_charRef.Inventory.AddItem((int)hitItem.OnSelect());
+                    scp_charRef.InventoryComp.AddItem((int)hitItem.OnSelect());
                     gm_gamemode.TilesManager.HideTiles();
                     gm_gamemode.Phase = GameModeGameplay.CharacterTurn.none;
                 }

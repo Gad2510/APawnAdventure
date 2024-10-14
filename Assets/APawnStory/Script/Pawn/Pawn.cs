@@ -25,9 +25,21 @@ namespace Betadron.Pawn
 
         
         //Actualiza las cordenas actuales del objeto 
+        //Reactiva el objeto en caso de haber sido desabilitado
         public virtual void UpdateSelected(object var)
         {
             Coordinates = MapFunctions.GetCoordn4Location(transform.position);
+            gameObject.SetActive(true);
+        }
+
+        public virtual void OnCreateElement()
+        {
+            return;
+        }
+
+        public virtual void OnDestroyElement()
+        {
+            return;
         }
     }
 }

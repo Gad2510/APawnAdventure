@@ -13,11 +13,11 @@ namespace Betadron.Pawn
          Clase padre de todos los elementos que puedan tomar acciones
          */
         //Componente de movimiento
-        public Movement Movement { get; private set; }
+        public Movement MoveComp { get; private set; }
         //Componente de vida (UI)
-        public Health Health { get; private set; }
+        public Health HealthComp { get; private set; }
         //Comopoennte de inventario (drop para enemigos)
-        public Inventory Inventory { private set; get; }
+        public Inventory InventoryComp { private set; get; }
 
         [SerializeField]
         private Stats s_stats;
@@ -32,25 +32,26 @@ namespace Betadron.Pawn
         }
         public bool IsMovable { get; set; }
         public bool CanAttack { get; set; }
-        public bool EndPhase { get; set; }
-        public Stats CharacterStats
-        {
-            get
-            {
-                return s_stats;
-            }
-        }
+        public virtual bool EndPhase { get; set; }
+        public Stats CharacterStats => s_stats;
 
         protected override void Start()
         {
+            OnCreateElement();
+
             base.Start();
+            
+            MoveComp = gameObject.GetComponent<Movement>();
+            HealthComp = gameObject.GetComponent<Health>();
+            InventoryComp = gameObject.GetComponent<Inventory>();
+        }
+        public override void OnCreateElement()
+        {
+            s_stats.int_health = s_stats.int_maxHealth;
             ((GameModeGameplay)GameManager.gm_gamemode).CharacterManager.AddCharacter(this);
             IsMovable = true;
-            Movement = gameObject.GetComponent<Movement>();
-            Health = gameObject.GetComponent<Health>();
-            Inventory = gameObject.GetComponent<Inventory>();
         }
-        protected void OnDisable()
+        public override void OnDestroyElement()
         {
             ((GameModeGameplay)GameManager.gm_gamemode).CharacterManager.RemoveCharacter(this);
         }
@@ -72,7 +73,7 @@ namespace Betadron.Pawn
         //regresa el componente de vida para usar en el combate
         public override object OnSelect()
         {
-            return Health;
+            return HealthComp;
         }
 
         public virtual void AutomaticActions()

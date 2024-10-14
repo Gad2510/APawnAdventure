@@ -32,12 +32,12 @@ namespace Betadron.Managers
         public OnReturn UndoAction; //Conjunto de acciones que se usan al regresar 
         public OnAction SelectCharacter; //Conjunto de acciones cuando se selecciona un caracter
 
-        private bool IsPlayerTurn { get; set; } 
+        public bool IsPlayerTurn { get; set; } 
 
         public TilesManager TilesManager { private set; get; }
         public MapManager MapManager { private set; get; }
         public CharactersManager CharacterManager { private set; get; }
-        public SpawnerManager SpawnManager { private set; get; }
+        public ItemManager SpawnManager { private set; get; }
         public IPlayable Target { get; set; }
         public Stats Stats { get; set; }
         public CharacterTurn Phase { get; set; }
@@ -52,7 +52,7 @@ namespace Betadron.Managers
             TilesManager = gameObject.AddComponent<TilesManager>();
             MapManager = gameObject.AddComponent<MapManager>();
             CharacterManager = gameObject.AddComponent<CharactersManager>();
-            SpawnManager = gameObject.AddComponent<SpawnerManager>();
+            SpawnManager = gameObject.AddComponent<ItemManager>();
             SpawnManager.InitManager(MapManager);
             //Asignar estado inicial del juego
             Phase = CharacterTurn.none;
@@ -64,7 +64,8 @@ namespace Betadron.Managers
 
         protected void Start()
         {
-            StartTurn();
+            //Ejecuta el inicio de turno un frame mas tarde para que termine que cargar las referencias de escena
+            Invoke(nameof(StartTurn),Time.deltaTime);
             
         }
         //PENDIENTE
@@ -104,23 +105,24 @@ namespace Betadron.Managers
             print("Start Turn");
             //player start input
             IsPlayerTurn = true;
-            CharacterManager.InitCharacters();
+            CharacterManager.InitCharactersTurn();
             PlayerTurn();
         }
         public void PlayerTurn()
         {
             print("Player turn");
+            IsPlayerTurn = false;
             EnemyTurn();
         }
         public void EnemyTurn()
         {
             print("Enemy turn");
-            StartCoroutine(CharacterManager.ExecuteNPCActions());
+            CharacterManager.ExecuteNPCActions();
         }
         public void EndTurn()
         {
             print("EndTurn turn");
-            StartTurn();
+            //StartTurn();
         }
     }
 }

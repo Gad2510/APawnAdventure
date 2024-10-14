@@ -10,6 +10,7 @@ namespace Betadron.Interfaces
         public object OnSelect();
         public void UpdateSelected(object var);
 
-        
+        public void OnCreateElement();
+        public void OnDestroyElement();
     }
 }
