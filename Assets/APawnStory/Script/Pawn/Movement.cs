@@ -26,14 +26,12 @@ namespace Betadron.Pawn
         {
             Vector3 dif = _steps - transform.position;
             int stepMove = (int)Mathf.Abs(dif.x) + (int)Mathf.Abs(dif.z);
-            scp_char.CharacterStats.UpdateMovement(stepMove);
-            scp_char.IsMovable = scp_char.CharacterStats.int_movement > 0;
+            scp_char.UpdateMovement(stepMove);
         }
         //Moviminto por pasos
         private void UpdateStamina()
         {
-            scp_char.CharacterStats.UpdateMovement(1);
-            scp_char.IsMovable = scp_char.CharacterStats.int_movement > 0;
+            scp_char.UpdateMovement(1);
         }
         public void MoveCharacter(Vector3 _goal,bool teleport=false)
         {
@@ -87,6 +85,7 @@ namespace Betadron.Pawn
                 }
                 transform.position = goal;
             }
+            print("End Movement");
             EndMovement();
         }
         protected virtual void EndMovement()
@@ -100,9 +99,10 @@ namespace Betadron.Pawn
         {
             Stack<INagavable> visited = new Stack<INagavable>();
             List<INagavable> unknow = new List<INagavable>();
-
             Debug.Log($"init :{_selfTile.Coordinates} | goal: {_goal}");
-            //ExplorePath(ref path, visited,unknow, visited.First,goal, 300);
+            //Restart the size of the path
+            _selfTile.PathSize = 0;
+            _selfTile.Conected = null;
             INagavable path = ExploreTiles(visited, unknow, _selfTile, _goal, 100);
             Debug.Log("Order Path");
             visited= OrderMovementStack(path);
@@ -113,12 +113,21 @@ namespace Betadron.Pawn
         {
             Stack<INagavable> path=new Stack<INagavable>();
             INagavable tile = _endTile;
-            int counter = 0;
-            while (tile != null && counter <= scp_char.CharacterStats.int_movement)
+            //Obtiene el tile adecuado para moverse
+            while (tile != null)
             {
-                path.Push(tile);
-                tile = tile.Conected;
-                counter++;
+                //Crea lista con tiles con los que se movera
+                if (scp_char.CharacterStats.int_movement >= tile.PathSize)
+                {
+                    path.Push(tile);
+                    string n = (tile != null) ? tile.Name : "None";
+                    Debug.Log($"<color=red> {tile} | {n}");
+                }
+                //Reinicia valores de los tiles y asigna el siguiente tile a revisar
+                INagavable temp = tile.Conected;
+                tile.Conected = null;
+                tile.navValues = null;
+                tile = temp;
             }
             return path;
         }
@@ -138,6 +147,9 @@ namespace Betadron.Pawn
             //Cual es su costo de navegacion de ese origen
             _tile.Neighbors.ForEach(x =>
             {
+                if (_visited.Contains(x))
+                    return;
+
                 Vector2Int values = currentTile.GetNavegationCost(x, _goal);
                 if (!x.navValues.HasValue || values.x < x.navValues.Value.x)
                 {
@@ -145,7 +157,7 @@ namespace Betadron.Pawn
                     x.navValues = values;
                 }
 
-                if (!_unknown.Contains(x) && !_visited.Contains(x))
+                if (!_unknown.Contains(x))
                     _unknown.Add(x);
 
             });
@@ -155,6 +167,7 @@ namespace Betadron.Pawn
                 ThenBy(x => currentTile.GetNavegationCost(x, _goal).x).ToList();
 
             _tile = _unknown.First();
+
             Debug.Log($"<color=green> Best solution {_tile.Name} | {currentTile.GetNavegationCost(_tile, _goal)}");
             return ExploreTiles(_visited, _unknown, _tile, _goal, iteration - 1);
         }

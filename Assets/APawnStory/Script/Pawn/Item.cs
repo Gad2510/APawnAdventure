@@ -31,6 +31,11 @@ namespace Betadron.Pawn
         {
             return itemID;
         }
+
+        public override void OnCreateElement()
+        {
+            gameObject.SetActive(true);
+        }
         //Actualiza posicion del objeto, revisa si el objeto mandado es un vector 3
         public override void UpdateSelected(object var)
         {
@@ -45,6 +50,8 @@ namespace Betadron.Pawn
         {
             scp_spawnMagr.RemoveItem(this);
             gameObject.SetActive(false);
+            //TESTING
+            scp_spawnMagr.CreateItem(ID);
         }
     }
 }

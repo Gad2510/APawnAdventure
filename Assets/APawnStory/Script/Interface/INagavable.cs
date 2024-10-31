@@ -9,6 +9,7 @@ namespace Betadron.Interfaces
         string Name { get; set; }
         bool HasObstacle { get; set; }
         Vector2Int? navValues { get; set; }
+        int PathSize { get; set; }
         INagavable Conected { get; set; }
         List<INagavable> Neighbors { get; }
         /// <summary>Calcula el costo de navegacion</summary>

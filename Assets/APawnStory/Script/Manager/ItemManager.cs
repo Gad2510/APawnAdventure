@@ -30,10 +30,16 @@ namespace Betadron.Managers
         public void CreateItem(int _ID, Vector2Int? _coord= null)
         {
             Vector2Int loc = (_coord != null) ? (Vector2Int)_coord : GetRandomLocation();
-
-            IInteractable item=Instantiate(scp_catalog.GetItemRecord(_ID).obj_reference) as IInteractable;
+            //Busca uno que no este en uso para reactivar
+            IColectable item = GetItemNotUsed(_ID);
+            //Crea un nuevo item con el ID asignado
+            if(item==null)
+                item =Instantiate(scp_catalog.GetItemRecord(_ID).obj_reference) as IColectable;
 
             item.UpdateSelected(MapFunctions.GetLocation4Coord(loc));
+            item.OnCreateElement();
+
+            lst_listItems.Add(item);
         }
 
         private Vector2Int GetRandomLocation()
@@ -42,6 +48,14 @@ namespace Betadron.Managers
         }
         //Read
         //Busca todos los objetos cerca del rango enviado
+        private IColectable GetItemNotUsed(int _ID)
+        {
+            IColectable item = null;
+
+            item = lst_notUsed.FirstOrDefault((x) => x.ID == _ID);
+
+            return item;
+        }
         public List<IColectable> GetItemByDistance(Vector2Int _coord, int _range)
         {
             List<IColectable> objects = null;

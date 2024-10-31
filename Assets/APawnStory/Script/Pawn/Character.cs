@@ -38,7 +38,7 @@ namespace Betadron.Pawn
         protected override void Start()
         {
             OnCreateElement();
-
+             
             base.Start();
             
             MoveComp = gameObject.GetComponent<Movement>();
@@ -59,12 +59,31 @@ namespace Betadron.Pawn
         //Inicio de turno se reinician stats
         public void StartTurn()
         {
+            Debug.Log("Start turn for", gameObject);
             EndPhase = false;
             s_stats.int_movement = s_stats.int_maxMovement;
             s_stats.int_stamina = s_stats.int_maxStamina;
             CanAttack = true;
         }
 
+        public void UpdateHealth(int amount)
+        {
+            s_stats.int_health -= amount;
+            s_stats.int_health = Mathf.Clamp(s_stats.int_health, 0, s_stats.int_maxHealth);
+        }
+
+        public void UpdateMovement(int amount)
+        {
+            s_stats.int_movement -= amount;
+            s_stats.int_movement = Mathf.Clamp(s_stats.int_movement, 0, s_stats.int_maxMovement);
+            IsMovable = s_stats.int_movement > 0;
+        }
+
+        public void UpdateStamina(int amount)
+        {
+            s_stats.int_stamina -= amount;
+            s_stats.int_stamina = Mathf.Clamp(s_stats.int_stamina, 0, s_stats.int_maxStamina);
+        }
         public Vector2Int GetCoordinates()
         {
             return Coordinates;

@@ -31,7 +31,7 @@ namespace Betadron.Pawn
             UpdateHealthBarPosition();
         }
 
-        public void UpdateHealthBarValue(float _porcentage)
+        private void UpdateHealthBarValue(float _porcentage)
         {
             sl_healthBar.value = _porcentage;
         }
@@ -44,8 +44,9 @@ namespace Betadron.Pawn
 
         private void ApplyDamage(Character _attacker)
         {
+            //Calculo de daño
             int damage = _attacker.CharacterStats.attack;
-            scp_char.CharacterStats.UpdateHealth(damage);
+            scp_char.UpdateHealth(damage);
         }
 
         public void GetDamage(Character _attacker)

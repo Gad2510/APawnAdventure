@@ -22,7 +22,7 @@ namespace Betadron.Pawn.NPC
             set { 
                 base.EndPhase = value;
                 if (value && !gm_gamemode.IsPlayerTurn)
-                    ((GameModeGameplay)GameManager.gm_gamemode).CharacterManager.ExecuteNPCActions();
+                    gm_gamemode.EnemyTurn();
             } 
         }
 
@@ -34,7 +34,7 @@ namespace Betadron.Pawn.NPC
 
         }
 
-        protected abstract void ReachDestination();
+        public abstract void ReachDestination();
         protected abstract void CollectItem(IColectable _item);
 
         //Busca el mojor spot para enocntrar comida
@@ -59,7 +59,6 @@ namespace Betadron.Pawn.NPC
         public override void UpdateSelected(object var)
         {
             base.UpdateSelected(var);
-            ReachDestination();
         }
 
         

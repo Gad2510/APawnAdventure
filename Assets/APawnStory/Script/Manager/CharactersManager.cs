@@ -37,20 +37,20 @@ namespace Betadron.Managers
             lst_interactable.ForEach((x) => x.StartTurn());
         }
         //Los npc´s hacen todas las acciones automaticas
-        public void ExecuteNPCActions()
+        public int ExecuteNPCActions()
         {
             Debug.Log($" Num de enemigos {lst_interactable.Count}");
             IPlayable npc = lst_interactable.FirstOrDefault((x) => !x.EndPhase);
+            Debug.Log(npc);
             //Si no hay mas npc se termina el turno
-            if (npc == default(IPlayable))
+            if (npc == null)
             {
-                ((GameModeGameplay)GameManager.gm_gamemode).EndTurn();
-                return;
+                return 0;
             }
 
             npc.AutomaticActions();
 
-            
+            return 1;
         }
 
         //CRUD 

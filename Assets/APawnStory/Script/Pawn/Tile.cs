@@ -18,7 +18,19 @@ namespace Betadron.Pawn
         private MeshRenderer mr_renderer;
 
         public Vector2Int? navValues { get; set; }
-        public INagavable Conected { get; set; }
+        private int int_pathSize=0;
+        public int PathSize { get => int_pathSize; set => int_pathSize=value; }
+
+        private INagavable in_conected;
+        public INagavable Conected
+        {
+            get => in_conected;
+            set
+            {
+                in_conected = value;
+                PathSize =(value!=null)? value.PathSize + 1 :0;
+            }
+        }
 
         private Vector2Int v2i_coord;
         

@@ -8,6 +8,7 @@ namespace Betadron.Pawn.NPC
         protected override void EndMovement()
         {
             base.EndMovement();
+            (scp_char as NPC).ReachDestination();
         }
     }
 }

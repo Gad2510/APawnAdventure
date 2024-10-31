@@ -768,7 +768,7 @@ MonoBehaviour:
     int_maxMovement: 8
     int_movement: 0
     attack: 10
-    defence: 2
+    defense: 0
     dexerity: 1
     isPlayer: 0
 --- !u!135 &1641461965
@@ -1342,7 +1342,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4355382913993012012, guid: 86f86bd00e5a2fe44b1cc2aff3b1f5dc, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 14.5
+      value: 10.5
       objectReference: {fileID: 0}
     - target: {fileID: 4355382913993012012, guid: 86f86bd00e5a2fe44b1cc2aff3b1f5dc, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1350,7 +1350,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4355382913993012012, guid: 86f86bd00e5a2fe44b1cc2aff3b1f5dc, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 6.5
+      value: 8.5
       objectReference: {fileID: 0}
     - target: {fileID: 4355382913993012012, guid: 86f86bd00e5a2fe44b1cc2aff3b1f5dc, type: 3}
       propertyPath: m_LocalRotation.w

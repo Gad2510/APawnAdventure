@@ -48,6 +48,7 @@ namespace Betadron.Managers
         // Start is called before the first frame update
         protected override void Awake()
         {
+            IsPlayerTurn = true;
             //Inicializar managers
             TilesManager = gameObject.AddComponent<TilesManager>();
             MapManager = gameObject.AddComponent<MapManager>();
@@ -65,7 +66,7 @@ namespace Betadron.Managers
         protected void Start()
         {
             //Ejecuta el inicio de turno un frame mas tarde para que termine que cargar las referencias de escena
-            Invoke(nameof(StartTurn),Time.deltaTime);
+            StartTurn();
             
         }
         //PENDIENTE
@@ -100,6 +101,8 @@ namespace Betadron.Managers
                     break;
             }
         }
+        private int maxNumberOfTurns = 5;
+        private int currentTurn=0;
         public void StartTurn()
         {
             print("Start Turn");
@@ -117,12 +120,19 @@ namespace Betadron.Managers
         public void EnemyTurn()
         {
             print("Enemy turn");
-            CharacterManager.ExecuteNPCActions();
+            int status=CharacterManager.ExecuteNPCActions();
+            print($"Enemis status {status}");
+            if (status == 0)
+            {
+                EndTurn();
+            }
         }
         public void EndTurn()
         {
             print("EndTurn turn");
-            //StartTurn();
+            currentTurn++;
+            if(currentTurn<maxNumberOfTurns)
+                StartTurn();
         }
     }
 }
