@@ -34,7 +34,7 @@ namespace Betadron.Managers
             Map = new List<INagavable>();
             //Obtiene referencia del prefab
             obj_tilePrefab = Resources.Load("Prefabs/MovementTile");
-            //TESTING
+            mapSize=GameManager.Instance.LevelInfo.size;
             GenerateMap(mapSize);
         }
 

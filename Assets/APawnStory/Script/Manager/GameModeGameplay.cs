@@ -66,7 +66,7 @@ namespace Betadron.Managers
         protected void Start()
         {
             //Ejecuta el inicio de turno un frame mas tarde para que termine que cargar las referencias de escena
-            StartTurn();
+            //StartTurn();
             
         }
         //PENDIENTE

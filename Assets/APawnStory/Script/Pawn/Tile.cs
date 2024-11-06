@@ -15,6 +15,8 @@ namespace Betadron.Pawn
         private Gradient g_heatMap;
 
         public float f_tempeture;
+        [SerializeField]
+        private MeshRenderer mr_heatmap;
         private MeshRenderer mr_renderer;
 
         public Vector2Int? navValues { get; set; }
@@ -100,7 +102,7 @@ namespace Betadron.Pawn
         public void UpdateSelected(object var)
         {
             f_tempeture = Mathf.Clamp01((float)var);
-           // mr_renderer.material.color = g_heatMap.Evaluate(f_tempeture);
+            mr_heatmap.material.color = g_heatMap.Evaluate(f_tempeture);
         }
         public void OnCreateElement()
         {
