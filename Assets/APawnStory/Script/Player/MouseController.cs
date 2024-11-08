@@ -29,7 +29,8 @@ namespace Betadron.Player
         }
         private void UpdateCursorPos()
         {
-            Ray cam2world = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Ray cam2world = Camera.main.ScreenPointToRay(Input.mousePosition); 
+   
             if (Physics.Raycast(cam2world, out RaycastHit hit, float.PositiveInfinity, MAP_LAYER))
             {
                 MeshRenderer tile = hit.collider.GetComponent<MeshRenderer>();

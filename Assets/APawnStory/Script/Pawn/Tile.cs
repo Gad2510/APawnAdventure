@@ -17,6 +17,7 @@ namespace Betadron.Pawn
         public float f_tempeture;
         [SerializeField]
         private MeshRenderer mr_heatmap;
+        [SerializeField]
         private MeshRenderer mr_renderer;
 
         public Vector2Int? navValues { get; set; }
@@ -89,9 +90,8 @@ namespace Betadron.Pawn
             navValues = null;
             Conected = null;
             Neighbors = new List<INagavable>();
-            mr_renderer = GetComponent<MeshRenderer>();
             gameObject.tag = "Untagged";
-            mr_renderer.enabled = false;
+            //mr_renderer.enabled = false;
         }
         //Cuando sea seleccionado regresa referencia al renderer
         public object OnSelect()
