@@ -34,7 +34,7 @@ namespace Betadron.Pawn
                 PathSize =(value!=null)? value.PathSize + 1 :0;
             }
         }
-
+        [SerializeField]
         private Vector2Int v2i_coord;
         
         public Vector2Int Coordinates

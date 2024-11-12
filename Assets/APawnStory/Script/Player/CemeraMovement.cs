@@ -1,9 +1,12 @@
 using UnityEngine;
+using Betadron.Managers;
 
 namespace Betadron.Player
 {
     public class CemeraMovement : MonoBehaviour
     {
+        private MapManager m_map;
+
         private KeyCode k_scrollKey= KeyCode.LeftShift;
 
         [SerializeField]
@@ -15,10 +18,13 @@ namespace Betadron.Player
         public Vector3 v3_origin;
         public Vector2 pos;
         // Start is called once before the first execution of Update after the MonoBehaviour is created
-        private void Awake()
+        private void Start()
         {
+            m_map = (GameManager.gm_gamemode as GameModeGameplay).MapManager;
+
             v2_screenSize = new Vector2(Screen.width, Screen.height)* f_screenPorcentage;
             v3_origin = transform.position;
+            v3_offset = Vector3.zero;
         }
 
         // Update is called once per frame
@@ -27,6 +33,7 @@ namespace Betadron.Player
             if (Input.GetKey(k_scrollKey))
             {
                 Scroll();
+                UpdateMap();
             }
         }
 
@@ -59,6 +66,10 @@ namespace Betadron.Player
             transform.position += (dir * f_speed * Time.deltaTime);
         }
 
+        private void UpdateMap()
+        {
+            Vector3 offset= m_map.UpdatePlayerPos(transform.position-(v3_origin));
+        }
 
     }
 }

@@ -6,25 +6,7 @@ using Betadron.Interfaces;
 using Betadron.Struct;
 namespace Betadron.Managers
 {
-    public enum Direction
-    {
-        TL=1<<0,
-        TC=1<<1,
-        TR=1<<2,
-        CL=1<<3,
-        C =1<<4,
-        CR=1<<5,
-        DL=1<<6,
-        DC=1<<7,
-        DR=1<<8,
-
-        Top=TL|TC|TR,
-        CenterH=C|CL|CR,
-        Down=DR|DC|DL,
-        Rigth=TR|CR|DR,
-        Left=TL|CL|DL,
-        CenterV=TC|C|DC
-    }
+    
 
     public class MapManager : MonoBehaviour
     {
@@ -32,18 +14,13 @@ namespace Betadron.Managers
         MapManager: Clase encargada de crear y manejar las actualizaciones en el mapa
         */
 
-        
-
         //Referencia el prefab del tile para instanciar
         public Object obj_tilePrefab;
 
-
-
         //Variables generacion
-        public List<TileBatch> testing;
         private const int MAX_BATCH_SIZE = 12;
         private int batchSize = 12;
-        private Dictionary<Direction,TileBatch> dic_map;
+        private List<TileBatch> lst_map;
 
         //Referencia de los tiles en el mapa organizados por sus cordenadas
         private List<INagavable> Map { get; set; }
@@ -56,35 +33,35 @@ namespace Betadron.Managers
             //Obtiene referencia del prefab
             obj_tilePrefab = Resources.Load("Prefabs/MovementTile");
             int mapSize=GameManager.Instance.LevelInfo.size;
-            float middle = mapSize / 2;
-            dic_map = new Dictionary<Direction,TileBatch>() 
+            this.batchSize = (Mathf.FloorToInt(mapSize / 3) < MAX_BATCH_SIZE) ? (int)Mathf.Ceil(mapSize / 3) : this.batchSize;
+            lst_map = new List<TileBatch>() 
             {
-                { Direction.TL,new TileBatch(Direction.TL,middle)},
-                { Direction.TC,new TileBatch(Direction.TC,middle)},
-                { Direction.TR,new TileBatch(Direction.TR,middle)},
-                { Direction.CL,new TileBatch(Direction.CL,middle)},
-                { Direction.C ,new TileBatch(Direction.C ,middle)},
-                { Direction.CR,new TileBatch(Direction.CR,middle)},
-                { Direction.DL,new TileBatch(Direction.DL,middle)},
-                { Direction.DC,new TileBatch(Direction.DC,middle)},
-                { Direction.DR,new TileBatch(Direction.DR,middle)},
+                new TileBatch(Direction.LU,batchSize),
+                new TileBatch(Direction.CU,batchSize),
+                new TileBatch(Direction.RU,batchSize),
+                new TileBatch(Direction.CL,batchSize),
+                new TileBatch(Direction.C ,batchSize),
+                new TileBatch(Direction.CR,batchSize),
+                new TileBatch(Direction.LD,batchSize),
+                new TileBatch(Direction.CD,batchSize),
+                new TileBatch(Direction.RD,batchSize),
             };
-            testing = dic_map.Values.ToList();
-            batchSize = (Mathf.FloorToInt(mapSize / 3) < MAX_BATCH_SIZE) ? (int)Mathf.Ceil(mapSize / 3) : batchSize;
+            
 
             GenerateMap(mapSize);
 
-            foreach (TileBatch b in dic_map.Values)
+            foreach (TileBatch b in lst_map)
             {
                 print($"{b.en_dir} : {b.v2_pivot}");
+                print(b.lst_batch.Count);
             }
         }
 
         private void Update()
         {
-            foreach(TileBatch b in dic_map.Values)
+            foreach(TileBatch b in lst_map)
             {
-                b.UpdateBatch();
+                b.UpdateItems();
             }
         }
 
@@ -99,15 +76,19 @@ namespace Betadron.Managers
             {
                 for (int y = -middle; y < _mapSize - middle; y++)
                 {
-                    int index = (Mathf.FloorToInt((y + middle) / batchSize)+1 * Mathf.FloorToInt((x + middle) / batchSize)+1)-1;
-                    Direction d = dic_map.Keys.ToList()[index];
                     //Instancea un tile del mapa en las coordenadas
                     INagavable go = (Instantiate(obj_tilePrefab, gameObject.transform) as GameObject).GetComponent<INagavable>();
-                    Vector2Int coord= (Vector2Int.right * x) + (Vector2Int.up * y);
+                    Vector2Int coord = (Vector2Int.right * x) + (Vector2Int.up * y);
                     //Se añade al map
                     Map.Add(go);
-                    dic_map[d].AddTile(go);
                     go.Coordinates = coord;
+
+                    TileBatch batch= lst_map.First((x) => !x.HasPassBoundary(go.Coordinates));
+                    if(batch.en_dir!= Direction.None)
+                    {
+                        batch.AddTile(go);
+                    }
+                    
 
                     AddNeighbors(ref lastTile,go, coord);
                 }
@@ -145,9 +126,59 @@ namespace Betadron.Managers
             INagavable target = GetTile4Coordinate(_coord);
             target.HasObstacle = _status;
         }
-        public void UpdatePlayerPos(Vector3 _plPos)
+        public Vector3 UpdatePlayerPos(Vector3 _plPos)
         {
+            //Ha pasado la barrera de el pivote actual (central)
+            if (!TileBatch.HasPassBoundary(_plPos))
+                return TileBatch.Center.v2_pivot;
 
+            Vector2 v_dir = TileBatch.GetPlayerDirection(_plPos);
+            Direction cdir = MapFunctions.CalculateDir(v_dir * -1) & (~Direction.C);
+            Direction dir = MapFunctions.CalculateDir(v_dir);
+            TileBatch newCenter = lst_map.First((x) => x.en_dir == dir);
+            dir = dir & (~Direction.C);
+            TileBatch.UpdateCenter(newCenter);
+            print($"<color=green>{_plPos}|{v_dir}|{dir}|{cdir}|{newCenter.v2_pivot}");
+            //if (Mathf.Log((int)cdir,2) % 1 >0)
+            //Actualizar central
+            foreach (TileBatch tb in lst_map)
+            {
+
+                //Actualiza posicion de linea opuesta
+                //Actualiza posocion
+                if ((tb.en_dir & cdir) > 0)
+                {
+                    print($"<color=red>Dir: {tb.en_dir} |Pivot: {tb.v2_pivot} | Move on one {cdir}  from {dir}");
+                    Direction conterPart = (tb.en_dir & (~cdir)) | dir;
+                    tb.UpdateBatch(conterPart);
+                    tb.MoveBatch();
+                    
+                }
+                //Actulizar a linea de direccion
+                else if ((tb.en_dir & dir) > 0)
+                {
+                    print($"Dir: {tb.en_dir} |Pivot: {tb.v2_pivot} | Move on one {dir}  from {Direction.C}");
+                    Direction conterPart = (tb.en_dir & (~dir)) | Direction.C;
+                    tb.UpdateBatch(conterPart);
+
+                }
+                //Actualiza linea del centro
+                else
+                {
+                    print($"Dir: {tb.en_dir} |Pivot: {tb.v2_pivot} | Move on one {Direction.C}  from {cdir}");
+                    Direction conterPart = (tb.en_dir & (~Direction.C)) | cdir;
+                    tb.UpdateBatch(conterPart);
+
+                }
+
+                print($"From C: {TileBatch.Center.v2_pivot}|{tb.en_dir} | pivot : {tb.v2_pivot}");
+            }
+            foreach (TileBatch tb in lst_map) {
+                print($"<color=yellow>{tb.en_dir} | pivot : {tb.v2_pivot}");
+            }
+            print($"<color=green>{TileBatch.Center.en_dir} | pivot : {TileBatch.Center.v2_pivot}");
+
+            return TileBatch.Center.v2_pivot;
         }
         //Read
          //Obtiene la referencia de las coordenas por el mesh renderer del objeto
@@ -169,14 +200,15 @@ namespace Betadron.Managers
         }
        
     }
-    public struct Batch_R_Tile
+    [SerializeField]
+    public class Batch_R_Tile
     {
         public Vector2Int coord;
         public INagavable tile;
     }
 
     [SerializeField]
-    public struct TileBatch
+    public class TileBatch
     {
         public static TileBatch Center;
         public static float Step;
@@ -185,70 +217,84 @@ namespace Betadron.Managers
         public Vector2 v2_pivot;
         public Vector2 v2_centerRel;
         public List<Batch_R_Tile> lst_batch;
+        public Color rand;
 
-        public TileBatch(Direction _dir,float _middle)
+
+        public TileBatch(Direction _dir,float _batchDistance)
         {
             v2_pivot = Vector2.zero;
             v2_centerRel = Vector2.zero;
             lst_batch = new List<Batch_R_Tile>();
             en_dir = _dir;
+            rand = Random.ColorHSV();
 
             if (_dir == Direction.C)
             {
                 Center = this;
-                Step = _middle;
+                Step = _batchDistance;
             }
                 
-            v2_centerRel = CalculatePivotDir(_dir);
-            v2_pivot = v2_centerRel * _middle;
+            v2_centerRel = MapFunctions.CalculateDir(_dir);
+            v2_pivot = v2_centerRel * _batchDistance;
         }
-
-        public Vector2 CalculatePivotDir(Direction _dir)
+        //Revisa si se han pasado los limites del bathc
+        public static bool HasPassBoundary(Vector3 _pos)
         {
-            Vector2 pivot = Vector2.zero;
-            if ((Direction.Top & _dir) > 0)
-            {
-                pivot += Vector2.up;
-            }
-            else if ((Direction.Down & _dir) > 0)
-            {
-                pivot += Vector2.down;
-            }
-
-            if ((Direction.Left & _dir) > 0)
-            {
-                pivot += Vector2.right;
-            }
-            else if ((Direction.Rigth & _dir) > 0)
-            {
-                pivot += Vector2.left;
-            }
-
-            return pivot;
+            float d = Step / 2;
+            return (_pos.x > Center.v2_pivot.x + d || _pos.x < Center.v2_pivot.x - d) ||
+                (_pos.z > Center.v2_pivot.y + d || _pos.z < Center.v2_pivot.y - d);
         }
-        
-        public void UpdateBatch()
+        public bool HasPassBoundary(Vector2Int _pos)
+        {
+            float d =Step/ 2;
+            return (_pos.x > v2_pivot.x+d || _pos.x < v2_pivot.x - d) || 
+                (_pos.y > v2_pivot.y+d || _pos.y < v2_pivot.y - d);
+        }
+        public static Vector2 GetPlayerDirection(Vector3 _pos)
+        {
+            Vector2 boundery = Vector2.one;
+            float d = Step / 2;
+            boundery.x = (Mathf.Abs(_pos.x) > d) ? Mathf.Sign(_pos.x) : 0f;
+            boundery.y = (Mathf.Abs(_pos.z) > d) ? Mathf.Sign(_pos.z) : 0f;
+            return boundery;
+        }
+        //Actualiza el centro con un nuevo batch
+        public static void UpdateCenter(TileBatch _newCenter)
+        {
+            Center = _newCenter;
+        }
+        public void UpdateBatch(Direction _dir)
+        {
+            en_dir =_dir;
+            v2_centerRel = MapFunctions.CalculateDir(_dir);
+        }
+        //Actauliza el valor de la formula por batch
+        public void UpdateItems()
         {
             foreach(Batch_R_Tile n in lst_batch)
             {
-                n.tile.UpdateSelected(MapFunctions.Formula(n.tile.Coordinates));
+                //n.tile.UpdateSelected(MapFunctions.Formula(n.tile.Coordinates));
+                (n.tile.OnSelect() as MeshRenderer).material.color = rand;
             }
         }
-
+        //Agraga un tile a el batch con el que trabajara
         public void AddTile(INagavable _tile)
         {
-            Batch_R_Tile rel= new Batch_R_Tile();
-            rel.tile = _tile;
             int x = (_tile.Coordinates.x < v2_pivot.x) ? Mathf.CeilToInt(v2_pivot.x) : Mathf.FloorToInt(v2_pivot.x);
             int y = (_tile.Coordinates.y < v2_pivot.y) ? Mathf.CeilToInt(v2_pivot.y) : Mathf.FloorToInt(v2_pivot.y);
-            rel.coord =new Vector2Int(_tile.Coordinates.x - x, _tile.Coordinates.y - y);
+            Batch_R_Tile rel = new Batch_R_Tile
+            {
+                tile = _tile,
+                coord = new Vector2Int(_tile.Coordinates.x - x, _tile.Coordinates.y - y)
+            };
             lst_batch.Add(rel);
         }
-
+        //Camiba posicion del batch con respecto al pivote del batch
+        //El pivote es un conceto no visible en el escenario solo una coordenada
         public void MoveBatch()
         {
             //Actualiza posicion con su relacion con el centro
-            v2_pivot = Center.v2_pivot + v2_centerRel;
+            v2_pivot = Center.v2_pivot + (v2_centerRel*Step);
             foreach(Batch_R_Tile t in lst_batch)
             {
                 Vector2 newpos = v2_pivot;
