@@ -24,7 +24,6 @@ namespace Betadron.Player
 
             v2_screenSize = new Vector2(Screen.width, Screen.height)* f_screenPorcentage;
             v3_origin = transform.position;
-            v3_offset = Vector3.zero;
         }
 
         // Update is called once per frame
@@ -68,7 +67,7 @@ namespace Betadron.Player
 
         private void UpdateMap()
         {
-            Vector3 offset= m_map.UpdatePlayerPos(transform.position-(v3_origin));
+            m_map.UpdatePlayerPos(transform.position-(v3_origin));
         }
 
     }

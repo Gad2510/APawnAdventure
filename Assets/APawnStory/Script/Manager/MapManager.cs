@@ -240,9 +240,12 @@ namespace Betadron.Managers
         //Revisa si se han pasado los limites del bathc
         public static bool HasPassBoundary(Vector3 _pos)
         {
+            Vector3 relativePos = _pos;
+            relativePos.x -= Center.v2_pivot.x;
+            relativePos.z -= Center.v2_pivot.y;
             float d = Step / 2;
-            return (_pos.x > Center.v2_pivot.x + d || _pos.x < Center.v2_pivot.x - d) ||
-                (_pos.z > Center.v2_pivot.y + d || _pos.z < Center.v2_pivot.y - d);
+            return (relativePos.x > d || relativePos.x <d) ||
+                (relativePos.z > d || relativePos.z < d);
         }
         public bool HasPassBoundary(Vector2Int _pos)
         {
@@ -253,9 +256,12 @@ namespace Betadron.Managers
         public static Vector2 GetPlayerDirection(Vector3 _pos)
         {
             Vector2 boundery = Vector2.one;
+            Vector3 relativePos = _pos;
+            relativePos.x-=Center.v2_pivot.x;
+            relativePos.z-=Center.v2_pivot.y;
             float d = Step / 2;
-            boundery.x = (Mathf.Abs(_pos.x) > d) ? Mathf.Sign(_pos.x) : 0f;
-            boundery.y = (Mathf.Abs(_pos.z) > d) ? Mathf.Sign(_pos.z) : 0f;
+            boundery.x = (Mathf.Abs(relativePos.x) > d) ? Mathf.Sign(relativePos.x) : 0f;
+            boundery.y = (Mathf.Abs(relativePos.z) > d) ? Mathf.Sign(relativePos.z) : 0f;
             return boundery;
         }
         //Actualiza el centro con un nuevo batch
