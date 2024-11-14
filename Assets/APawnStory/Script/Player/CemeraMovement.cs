@@ -24,7 +24,7 @@ namespace Betadron.Player
 
             v2_screenSize = new Vector2(Screen.width, Screen.height)* f_screenPorcentage;
             v3_origin = transform.position;
-            v3_offset = Vector3.zero;
+            //v3_offset = Vector3.zero;
         }
 
         // Update is called once per frame

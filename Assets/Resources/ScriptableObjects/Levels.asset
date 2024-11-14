@@ -22,5 +22,5 @@ MonoBehaviour:
   - ID: 1
     str_name: test-HeatMap
     str_description: Testing minimap for harvesting, creation of items
-    size: 36
+    size: 45
     gameMode: 0

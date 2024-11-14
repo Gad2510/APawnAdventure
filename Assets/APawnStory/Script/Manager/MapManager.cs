@@ -18,8 +18,8 @@ namespace Betadron.Managers
         public Object obj_tilePrefab;
 
         //Variables generacion
-        private const int MAX_BATCH_SIZE = 12;
-        private int batchSize = 12;
+        private const int MAX_BATCH_SIZE = 15;
+        private int batchSize = 15;
         private List<TileBatch> lst_map;
 
         //Referencia de los tiles en el mapa organizados por sus cordenadas
@@ -46,7 +46,6 @@ namespace Betadron.Managers
                 new TileBatch(Direction.CD,batchSize),
                 new TileBatch(Direction.RD,batchSize),
             };
-            
 
             GenerateMap(mapSize);
 
@@ -143,13 +142,13 @@ namespace Betadron.Managers
             //Actualizar central
             foreach (TileBatch tb in lst_map)
             {
-
+                Direction conterPart = Direction.None;
                 //Actualiza posicion de linea opuesta
                 //Actualiza posocion
                 if ((tb.en_dir & cdir) > 0)
                 {
                     print($"<color=red>Dir: {tb.en_dir} |Pivot: {tb.v2_pivot} | Move on one {cdir}  from {dir}");
-                    Direction conterPart = (tb.en_dir & (~cdir)) | dir;
+                    conterPart = (tb.en_dir & (~cdir)) | dir;
                     tb.UpdateBatch(conterPart);
                     tb.MoveBatch();
                     
@@ -157,16 +156,21 @@ namespace Betadron.Managers
                 //Actulizar a linea de direccion
                 else if ((tb.en_dir & dir) > 0)
                 {
-                    print($"Dir: {tb.en_dir} |Pivot: {tb.v2_pivot} | Move on one {dir}  from {Direction.C}");
-                    Direction conterPart = (tb.en_dir & (~dir)) | Direction.C;
+                    print($"<color=blue> Dir: {tb.en_dir} |Pivot: {tb.v2_pivot} | Move on one {dir}  from {Direction.C}");
+                    conterPart = (tb.en_dir & (~dir)) | Direction.C;
                     tb.UpdateBatch(conterPart);
 
                 }
                 //Actualiza linea del centro
                 else
                 {
-                    print($"Dir: {tb.en_dir} |Pivot: {tb.v2_pivot} | Move on one {Direction.C}  from {cdir}");
-                    Direction conterPart = (tb.en_dir & (~Direction.C)) | cdir;
+                    print($"Center Dir: {tb.en_dir} |Pivot: {tb.v2_pivot} | Move on one {Direction.C}  from {cdir}");
+                    conterPart = tb.en_dir;
+                    if (tb.en_dir!=Direction.C)
+                        conterPart = (conterPart & (~Direction.C));
+
+                    conterPart = conterPart | cdir;
+
                     tb.UpdateBatch(conterPart);
 
                 }
@@ -217,7 +221,6 @@ namespace Betadron.Managers
         public Vector2 v2_pivot;
         public Vector2 v2_centerRel;
         public List<Batch_R_Tile> lst_batch;
-        public Color rand;
 
 
         public TileBatch(Direction _dir,float _batchDistance)
@@ -226,7 +229,6 @@ namespace Betadron.Managers
             v2_centerRel = Vector2.zero;
             lst_batch = new List<Batch_R_Tile>();
             en_dir = _dir;
-            rand = Random.ColorHSV();
 
             if (_dir == Direction.C)
             {
@@ -253,9 +255,12 @@ namespace Betadron.Managers
         public static Vector2 GetPlayerDirection(Vector3 _pos)
         {
             Vector2 boundery = Vector2.one;
+            Vector3 relativePos = _pos;
+            relativePos.x -= Center.v2_pivot.x;
+            relativePos.z -= Center.v2_pivot.y;
             float d = Step / 2;
-            boundery.x = (Mathf.Abs(_pos.x) > d) ? Mathf.Sign(_pos.x) : 0f;
-            boundery.y = (Mathf.Abs(_pos.z) > d) ? Mathf.Sign(_pos.z) : 0f;
+            boundery.x = (Mathf.Abs(relativePos.x) > d) ? Mathf.Sign(relativePos.x) : 0f;
+            boundery.y = (Mathf.Abs(relativePos.z) > d) ? Mathf.Sign(relativePos.z) : 0f;
             return boundery;
         }
         //Actualiza el centro con un nuevo batch
@@ -273,8 +278,7 @@ namespace Betadron.Managers
         {
             foreach(Batch_R_Tile n in lst_batch)
             {
-                //n.tile.UpdateSelected(MapFunctions.Formula(n.tile.Coordinates));
-                (n.tile.OnSelect() as MeshRenderer).material.color = rand;
+                n.tile.UpdateSelected(MapFunctions.Formula(n.tile.Coordinates));
             }
         }
         //Agraga un tile a el batch con el que trabajara
