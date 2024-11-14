@@ -242,9 +242,12 @@ namespace Betadron.Managers
         //Revisa si se han pasado los limites del bathc
         public static bool HasPassBoundary(Vector3 _pos)
         {
+            Vector3 relativePos = _pos;
+            relativePos.x -= Center.v2_pivot.x;
+            relativePos.z -= Center.v2_pivot.y;
             float d = Step / 2;
-            return (_pos.x > Center.v2_pivot.x + d || _pos.x < Center.v2_pivot.x - d) ||
-                (_pos.z > Center.v2_pivot.y + d || _pos.z < Center.v2_pivot.y - d);
+            return (relativePos.x > d || relativePos.x <d) ||
+                (relativePos.z > d || relativePos.z < d);
         }
         public bool HasPassBoundary(Vector2Int _pos)
         {
