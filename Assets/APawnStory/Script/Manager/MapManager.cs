@@ -25,6 +25,9 @@ namespace Betadron.Managers
         //Referencia de los tiles en el mapa organizados por sus cordenadas
         private List<INagavable> Map { get; set; }
 
+        public float sigma = 5f;
+        public float fx = 24f;
+        public float fy = 26f;
         // Start is called before the first frame update
         void Awake()
         {
@@ -60,6 +63,9 @@ namespace Betadron.Managers
         {
             foreach(TileBatch b in lst_map)
             {
+                MapFunctions.FX = fx;
+                MapFunctions.FY = fy;
+                MapFunctions.Sigma = sigma;
                 b.UpdateItems();
             }
         }

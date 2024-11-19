@@ -15,12 +15,15 @@ namespace Betadron.Managers
         private MapManager scp_map;
         private FoodCatalog scp_catalog;
 
+
+        private List<SpawnPoint> lst_spawnCandidates;
         private List<IColectable> lst_listItems;
         private List<IColectable> lst_notUsed;
 
         public void InitManager(MapManager _map)
         {
             scp_catalog = Resources.Load<FoodCatalog>("ScriptableObjects/Catalog");
+            lst_spawnCandidates = new List<SpawnPoint>();
             lst_listItems = new List<IColectable>();
             lst_notUsed = new List<IColectable>();
             scp_map = _map;
@@ -45,6 +48,12 @@ namespace Betadron.Managers
         private Vector2Int GetRandomLocation()
         {
             return scp_map.GetRandomTile().Coordinates;
+        }
+
+        public void AddSpawnCandidate(INagavable _tile, float _value)
+        {
+            lst_spawnCandidates.Add(new (_tile,_value));
+
         }
         //Read
         //Busca todos los objetos cerca del rango enviado
@@ -107,5 +116,17 @@ namespace Betadron.Managers
             return lst_listItems.Count;
         }
         
+    }
+
+    public class SpawnPoint
+    {
+        INagavable i_tile;
+        float f_value;
+
+        public SpawnPoint(INagavable _tile, float _value)
+        {
+            i_tile = _tile;
+            f_value = _value;
+        }
     }
 }
