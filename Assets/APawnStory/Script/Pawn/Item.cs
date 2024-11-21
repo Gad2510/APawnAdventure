@@ -5,7 +5,7 @@ using Betadron.Managers;
 using Betadron.Interfaces;
 namespace Betadron.Pawn
 {
-    public class Item : Pawn,IColectable
+    public class Item : Pawn,IColectable,IAged
     {
         [SerializeField]
         private int itemID;
@@ -15,14 +15,21 @@ namespace Betadron.Pawn
         private bool isMeat;
 
         private ItemManager scp_spawnMagr;
-
+        private MeshRenderer mr_renderer;
+        private int maxLife=2;
+        private int life = 0;
+        public int Life { get=>life; private set=>life=value; }
         public int ID => itemID;
         public bool IsEdible => isEdible;
         public bool IsMeat => isMeat;
-
-        protected override void Start()
+        private void Awake()
         {
             scp_spawnMagr = ((GameModeGameplay)GameManager.gm_gamemode).SpawnManager;
+            mr_renderer = GetComponent<MeshRenderer>();
+        }
+        protected override void Start()
+        {
+
             scp_spawnMagr.SetItemAtributes(this);
             base.Start();
         }
@@ -34,7 +41,9 @@ namespace Betadron.Pawn
 
         public override void OnCreateElement()
         {
-            gameObject.SetActive(true);
+            mr_renderer.enabled=true;
+            scp_spawnMagr.Add2AgedItems(this);
+            Born();
         }
         //Actualiza posicion del objeto, revisa si el objeto mandado es un vector 3
         public override void UpdateSelected(object var)
@@ -43,15 +52,27 @@ namespace Betadron.Pawn
                 transform.position=(Vector3)var;
 
             base.UpdateSelected(var);
-            print($"Item coord {Coordinates}");
         }
         //Desactiva Objeto
         public override void OnDestroyElement()
         {
             scp_spawnMagr.RemoveItem(this);
-            gameObject.SetActive(false);
-            //TESTING
-            scp_spawnMagr.CreateItem(ID);
+            scp_spawnMagr.RemoveFromAgedItems(this);
+            mr_renderer.enabled=false;
+        }
+        public void Born()
+        {
+            life = maxLife; 
+        }
+        public void Aged()
+        {
+            life--;
+            if (life <= 0)
+                Die();
+        }
+        public void Die()
+        {
+            OnDestroyElement();
         }
     }
 }

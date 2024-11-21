@@ -27,15 +27,15 @@ namespace Betadron.Struct
     public class MapFunctions
     {
         //Variables funcion objetivo
-        private static float sigma = 5f;
+        private static float sigma = 50f;
         private static float fx = 24f;
         private static float fy = 26f;
-        private static float gemeTime = 0f;
+        private static float gameTime = 0f;
 
         public static float Sigma { get=>sigma; set=>sigma=value; }
         public static float FX { get=>fx; set=>fx=value; }
         public static float FY { get=>fy; set=>fy=value; }
-        public static float gameTime { get => gemeTime; set => gemeTime = value; }
+        public static float GameTime { get => gameTime; set => gameTime = value; }
 
         //Funciones generales usadas para el mapa
         private static readonly Vector3 v3_origin = new Vector3(0.5f, 0.2f, 0.5f);
@@ -110,16 +110,35 @@ namespace Betadron.Struct
         public static float Formula(Vector2 coord)
         {
             //TESTING
-            //float t = gameTime *Time.deltaTime;
-            float t = Time.time/10;
+            float t = gameTime;
+            //float t = Time.time/10;
             float result = 0;
+            
+            coord = coord+(Vector2.one*t);
+            result = EvaluateAxis(coord.x,0)+ EvaluateAxis(coord.y,1);
+            return result;
+        }
+
+        private static float EvaluateAxis(float _axis, float index)
+        {
             float exp = 0;
             float trian = 0;
-            coord = new Vector2(Mathf.Sin((coord.x) + t), Mathf.Cos((coord.y) + t));
-            exp = Mathf.Exp((-Mathf.Pow((coord.x - Mathf.PI), 2) + Mathf.Pow((coord.y - Mathf.PI), 2)) / (2 * Mathf.Pow(Sigma, 2)));
-            trian = -Mathf.Cos((coord.y * FY)) * Mathf.Cos((coord.x * FX));
-            result = (exp * trian);
-            return result;
+            float baseM = index % 2;
+            switch (baseM)
+            {
+                case 0:
+                    exp = Mathf.Pow(_axis, 3);
+                    trian = 10 * (Mathf.Cos(2 * Mathf.PI * _axis * FY) + Mathf.Sin(_axis * FX));
+                    return (exp * trian) / (2 * Mathf.Pow(Sigma, 2));
+                case 1:
+                    exp = Mathf.Pow(_axis, 3);
+                    trian = 10 * (Mathf.Sin(2 * Mathf.PI * _axis * FX) + Mathf.Cos(_axis * FY));
+                    return (exp * trian) / (2 * Mathf.Pow(Sigma, 2));
+                default:
+                    return 0;
+            }
+
+            
         }
     }
 }

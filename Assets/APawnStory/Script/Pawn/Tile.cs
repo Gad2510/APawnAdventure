@@ -104,9 +104,6 @@ namespace Betadron.Pawn
         {
             f_tempeture = (float)var;
             mr_heatmap.material.color = g_heatMap.Evaluate(f_tempeture);
-            //Add as candidate if grader than 0.7
-            if(f_tempeture>0.7f)
-                (GameManager.gm_gamemode as GameModeGameplay).SpawnManager.AddSpawnCandidate(this, f_tempeture);
         }
         public void OnCreateElement()
         {

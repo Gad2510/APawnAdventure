@@ -45,10 +45,21 @@ namespace Betadron.Managers
         public ItemRecord ItemsRecords { get; private set; }
         public GameObject UI_Characters { get; set; }
 
+        private int int_turn=0;
+        private int int_numTurns=5;
+
+        private int currentTurn = 0;
+
+        public float EvaluationTime { get; private set; }
+        public int TurnToEvaluate { get => int_numTurns; set => int_numTurns = value; }
+
         // Start is called before the first frame update
         protected override void Awake()
         {
+            PythonIDE.LoadPath();
+            PythonIDE.CreatePythonIDE();
             IsPlayerTurn = true;
+            EvaluationTime = Time.deltaTime / 4;
             //Inicializar managers
             TilesManager = gameObject.AddComponent<TilesManager>();
             MapManager = gameObject.AddComponent<MapManager>();
@@ -66,8 +77,9 @@ namespace Betadron.Managers
         protected void Start()
         {
             //Ejecuta el inicio de turno un frame mas tarde para que termine que cargar las referencias de escena
+            SpawnManager.SpawnItems();
             //StartTurn();
-            
+
         }
         //PENDIENTE
         protected override void LoadUI()
@@ -101,11 +113,24 @@ namespace Betadron.Managers
                     break;
             }
         }
-        private int maxNumberOfTurns = 5;
-        private int currentTurn=0;
+        //Inicia simulaicon por el numero de turnos designados
+        public void StartSimulation()
+        {
+            print("Start Simulation");
+            print(int_turn);
+            print(int_numTurns);
+            currentTurn = 0;
+            StartTurn();
+        }
+
         public void StartTurn()
         {
+            if (currentTurn >= TurnToEvaluate)
+                return;
             print("Start Turn");
+            int_turn++;
+            MapFunctions.GameTime+= EvaluationTime;
+            print(MapFunctions.GameTime);
             //player start input
             IsPlayerTurn = true;
             CharacterManager.InitCharactersTurn();
@@ -131,8 +156,16 @@ namespace Betadron.Managers
         {
             print("EndTurn turn");
             currentTurn++;
-            if(currentTurn<maxNumberOfTurns)
-                StartTurn();
+            SpawnManager.agedItems.Invoke();
+            SpawnManager.SpawnItems();
+            if (currentTurn < TurnToEvaluate)
+                StartCoroutine(DelayNextTurn());
+        }
+
+        private IEnumerator DelayNextTurn()
+        {
+            yield return new WaitForSeconds(0.1f);
+            StartTurn();
         }
     }
 }

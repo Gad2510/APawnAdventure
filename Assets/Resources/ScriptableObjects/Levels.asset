@@ -16,7 +16,7 @@ MonoBehaviour:
     ID: 0
     str_name: default
     str_description: default level to be load if not register
-    size: 10
+    size: 45
     gameMode: 0
   lst_levels:
   - ID: 1

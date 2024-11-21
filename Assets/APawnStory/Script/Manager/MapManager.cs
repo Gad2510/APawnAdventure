@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using Betadron.Interfaces;
 using Betadron.Struct;
+
 namespace Betadron.Managers
 {
     
@@ -25,9 +26,6 @@ namespace Betadron.Managers
         //Referencia de los tiles en el mapa organizados por sus cordenadas
         private List<INagavable> Map { get; set; }
 
-        public float sigma = 5f;
-        public float fx = 24f;
-        public float fy = 26f;
         // Start is called before the first frame update
         void Awake()
         {
@@ -57,15 +55,14 @@ namespace Betadron.Managers
                 print($"{b.en_dir} : {b.v2_pivot}");
                 print(b.lst_batch.Count);
             }
+
+            
         }
 
         private void Update()
         {
             foreach(TileBatch b in lst_map)
             {
-                MapFunctions.FX = fx;
-                MapFunctions.FY = fy;
-                MapFunctions.Sigma = sigma;
                 b.UpdateItems();
             }
         }
@@ -203,10 +200,29 @@ namespace Betadron.Managers
             INagavable tile = Map.FirstOrDefault((x) => x.Coordinates == _coord);
             return tile;
         }
-        public INagavable GetRandomTile()
+        public INagavable GetRandomTile(List<Vector2Int> _excludeList=null)
         {
-            int i = Random.Range(0, Map.Count);
-            return Map[i];
+            List<INagavable> lookin = Map;
+            lookin = Map.Where((x) => !x.HasObstacle).ToList();
+            if (_excludeList!= null)
+            {
+                lookin= lookin.Where(x => (!_excludeList.Contains(x.Coordinates))).ToList();
+            }
+            int i =Random.Range(0, lookin.Count);
+            return lookin[i];
+        }
+
+        public INagavable GetRandomTileInRange(Vector2Int _coord, int _range,List<Vector2Int> _excludeList = null)
+        {
+            List<INagavable> lookin = Map;
+            lookin = Map.Where((x) => !x.HasObstacle).ToList();
+            if (_excludeList != null)
+            {
+                lookin = lookin.Where(x => (!_excludeList.Contains(x.Coordinates))).ToList();
+            }
+            lookin = lookin.Where(x => (Vector2Int.Distance(x.Coordinates,_coord)<=_range)).ToList();
+            int i = Random.Range(0, lookin.Count);
+            return lookin[i];
         }
        
     }

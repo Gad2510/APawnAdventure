@@ -22,12 +22,12 @@ namespace Betadron.Pawn
 
         public void Born()
         {
-            ((GameModeGameplay)GameManager.gm_gamemode).CharacterManager.AddObject(this);
+            ((GameModeGameplay)GameManager.gm_gamemode).CharacterManager.AddObject(this,Coordinates);
         }
 
         public void Die()
         {
-            ((GameModeGameplay)GameManager.gm_gamemode).CharacterManager.RemoveObject(this);
+            ((GameModeGameplay)GameManager.gm_gamemode).CharacterManager.RemoveObject(this,Coordinates);
         }
     }
 }

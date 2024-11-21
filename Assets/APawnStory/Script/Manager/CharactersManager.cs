@@ -62,10 +62,10 @@ namespace Betadron.Managers
 
             else { lst_interactable.Add(_char); }
         }
-        public void AddObject(IAged _obj)
+        public void AddObject(IAged _obj,Vector2Int _coord)
         {
             lst_noInteractable.Add(_obj);
-            ((GameModeGameplay)GameManager.gm_gamemode).MapManager.UpdateObstacleTile(_obj.Coordinates);
+            ((GameModeGameplay)GameManager.gm_gamemode).MapManager.UpdateObstacleTile(_coord);
         }
         //Delete
         //Acción de quitar Caracter a la lista 
@@ -79,10 +79,10 @@ namespace Betadron.Managers
 
             else { lst_interactable.Remove(_char); }
         }
-        public void RemoveObject(IAged _obj)
+        public void RemoveObject(IAged _obj, Vector2Int _coord)
         {
             lst_noInteractable.Remove(_obj);
-            ((GameModeGameplay)GameManager.gm_gamemode).MapManager.UpdateObstacleTile(_obj.Coordinates,false);
+            ((GameModeGameplay)GameManager.gm_gamemode).MapManager.UpdateObstacleTile(_coord, false);
         }
         //Update
         //Agrega caracteres a la lista de elementos en rango
