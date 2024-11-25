@@ -110,8 +110,8 @@ namespace Betadron.Struct
         public static float Formula(Vector2 coord)
         {
             //TESTING
+            //float t = Time.time / 10;
             float t = gameTime;
-            //float t = Time.time/10;
             float result = 0;
             
             coord = coord+(Vector2.one*t);

@@ -1210,13 +1210,13 @@ MonoBehaviour:
     int_health: 0
     int_maxStamina: 12
     int_stamina: 0
-    int_maxMovement: 6
+    int_maxMovement: 4
     int_movement: 0
     attack: 10
     defense: 0
     dexerity: 1
     isPlayer: 0
-  detectArea: 3
+  detectArea: 4
 --- !u!135 &1641461965
 SphereCollider:
   m_ObjectHideFlags: 0

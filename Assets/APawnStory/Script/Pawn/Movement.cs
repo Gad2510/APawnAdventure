@@ -104,9 +104,9 @@ namespace Betadron.Pawn
             _selfTile.PathSize = 0;
             _selfTile.Conected = null;
             INagavable path = ExploreTiles(visited, unknow, _selfTile, _goal, 100);
-            Debug.Log("Order Path");
+           // Debug.Log("Order Path");
             visited= OrderMovementStack(path);
-            Debug.Log("End Order Path");
+           // Debug.Log("End Order Path");
             return visited;
         }
         private Stack<INagavable> OrderMovementStack(INagavable _endTile)
@@ -121,7 +121,7 @@ namespace Betadron.Pawn
                 {
                     path.Push(tile);
                     string n = (tile != null) ? tile.Name : "None";
-                    Debug.Log($"<color=red> {tile} | {n}");
+                    //Debug.Log($"<color=red> {tile} | {n}");
                 }
                 //Reinicia valores de los tiles y asigna el siguiente tile a revisar
                 INagavable temp = tile.Conected;
@@ -136,7 +136,7 @@ namespace Betadron.Pawn
 
             INagavable currentTile = _tile;
             Vector2Int f = currentTile.GetNavegationCost(currentTile, _goal);
-            Debug.Log($"{iteration} Explote tile: {_tile.Name} | Cost F= {f} ");
+            //Debug.Log($"{iteration} Explote tile: {_tile.Name} | Cost F= {f} ");
             if (f.x <= 0 || iteration <= 0) // Condicion de salida
                 return _tile;
             //Se agrega a la lista de visitados
@@ -168,7 +168,7 @@ namespace Betadron.Pawn
 
             _tile = _unknown.First();
 
-            Debug.Log($"<color=green> Best solution {_tile.Name} | {currentTile.GetNavegationCost(_tile, _goal)}");
+           // Debug.Log($"<color=green> Best solution {_tile.Name} | {currentTile.GetNavegationCost(_tile, _goal)}");
             return ExploreTiles(_visited, _unknown, _tile, _goal, iteration - 1);
         }
         //Usado para revisar el camino usado

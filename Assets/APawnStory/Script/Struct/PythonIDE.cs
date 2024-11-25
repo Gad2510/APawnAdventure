@@ -39,7 +39,9 @@ namespace Betadron.Struct
                 CreatePythonIDE();
 
             pythonIDE.FileName = "python"; // O "python3" dependiendo de tu sistema
-            pythonIDE.Arguments = $"{pythonPath} {minXValue} {maxXValue} {minYValue} {maxYValue} {cicles} {population} {MapFunctions.GameTime+ timeOffset}"; // Pasar argumentos al script
+            // Pasar argumentos al script
+            pythonIDE.Arguments = $"{pythonPath} {minXValue} {maxXValue} {minYValue} " +
+                $"{maxYValue} {cicles} {population} {MapFunctions.GameTime+ timeOffset}"; 
             pythonIDE.UseShellExecute = false;
             pythonIDE.RedirectStandardOutput = true;
         }

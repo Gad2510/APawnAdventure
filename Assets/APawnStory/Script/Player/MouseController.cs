@@ -66,7 +66,7 @@ namespace Betadron.Player
                 if (gm_gamemode.Phase == GameModeGameplay.CharacterTurn.Moving)
                     scp_charRef.MoveComp.MoveCharacter(_other.transform.position);
 
-                gm_gamemode.Phase = GameModeGameplay.CharacterTurn.none;
+                gm_gamemode.Phase = GameModeGameplay.CharacterTurn.StartTurn;
             }
         }
         private void OnClickCharacter(Collider _other)
@@ -75,7 +75,7 @@ namespace Betadron.Player
             {
                 Character hitCharacter = _other.GetComponent<Character>();
                 //Get the character
-                if (gm_gamemode.Phase == GameModeGameplay.CharacterTurn.none)
+                if (gm_gamemode.Phase == GameModeGameplay.CharacterTurn.StartTurn)
                 {
                     scp_charRef = hitCharacter;
                     gm_gamemode.SelectCharacter.Invoke(scp_charRef, scp_charRef.CharacterStats);
@@ -88,7 +88,7 @@ namespace Betadron.Player
                     scp_charRef.CanAttack = false;
                     ((Health)hitCharacter.OnSelect()).GetDamage(scp_charRef);
                     gm_gamemode.TilesManager.HideTiles();
-                    gm_gamemode.Phase = GameModeGameplay.CharacterTurn.none;
+                    gm_gamemode.Phase = GameModeGameplay.CharacterTurn.StartTurn;
                 }
 
             }
@@ -104,7 +104,7 @@ namespace Betadron.Player
                 {
                     scp_charRef.InventoryComp.AddItem((int)hitItem.OnSelect());
                     gm_gamemode.TilesManager.HideTiles();
-                    gm_gamemode.Phase = GameModeGameplay.CharacterTurn.none;
+                    gm_gamemode.Phase = GameModeGameplay.CharacterTurn.StartTurn;
                 }
             }
 

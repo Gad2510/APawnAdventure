@@ -132,7 +132,7 @@ namespace Betadron.Managers
         public List<IColectable> GetAllItemsInRange(Vector2Int _coord, int _range)
         {
             List<IColectable> lookfor = lst_listItems.Where((x) => Vector2Int.Distance(x.Coordinates, _coord) <= _range).ToList();
-            return lst_listItems;
+            return lookfor;
         }
         //Update
         public void SetItemAtributes(IColectable _item)

@@ -8,6 +8,7 @@ namespace Betadron.Pawn.NPC
     {
         public override void ReachDestination()
         {
+            base.ReachDestination();
             IColectable item= scp_itemManager.GetItemInLocation(Coordinates);
             if(item!= null && item.IsEdible && !item.IsMeat)
             {
@@ -17,6 +18,7 @@ namespace Betadron.Pawn.NPC
             {
                 EndPhase = true;
             }
+
         }
 
         protected override void CollectItem(IColectable _item)

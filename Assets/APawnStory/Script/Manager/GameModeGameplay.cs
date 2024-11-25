@@ -45,10 +45,12 @@ namespace Betadron.Managers
         public ItemRecord ItemsRecords { get; private set; }
         public GameObject UI_Characters { get; set; }
 
+        private bool is_processing=false;
         private int int_turn=0;
-        private int int_numTurns=5;
-
         private int currentTurn = 0;
+        private int int_numTurns=1;
+
+        
 
         public float EvaluationTime { get; private set; }
         public int TurnToEvaluate { get => int_numTurns; set => int_numTurns = value; }
@@ -78,6 +80,8 @@ namespace Betadron.Managers
         {
             //Ejecuta el inicio de turno un frame mas tarde para que termine que cargar las referencias de escena
             SpawnManager.SpawnItems();
+            Phase = CharacterTurn.StartTurn;
+            is_processing = false;
             //StartTurn();
 
         }
@@ -93,7 +97,7 @@ namespace Betadron.Managers
         public void UndoLastAction()
         {
             //Si NO hay un estado asginado
-            if (Phase == CharacterTurn.none)
+            if (Phase == CharacterTurn.StartTurn)
                 return;
 
             UndoAction(Phase);
@@ -101,7 +105,7 @@ namespace Betadron.Managers
             switch (Phase)
             {
                 case CharacterTurn.Select:
-                    Phase = CharacterTurn.none;
+                    Phase = CharacterTurn.StartTurn;
                     break;
                 //Ambas regresan al menu de seleccion de accion de caracter
                 case CharacterTurn.Attacking:
@@ -109,25 +113,34 @@ namespace Betadron.Managers
                     Phase = CharacterTurn.Select;
                     break;
                 default:
-                    Phase = CharacterTurn.none;
+                    Phase = CharacterTurn.StartTurn;
                     break;
             }
         }
         //Inicia simulaicon por el numero de turnos designados
         public void StartSimulation()
         {
+            if (is_processing)
+            {
+                print("IN OTHER PHASE - "+Phase);
+                return;
+            }
+                
             print("Start Simulation");
-            print(int_turn);
-            print(int_numTurns);
             currentTurn = 0;
             StartTurn();
         }
 
         public void StartTurn()
         {
+            Phase = CharacterTurn.StartTurn;
             if (currentTurn >= TurnToEvaluate)
+            {
                 return;
+            }
+                
             print("Start Turn");
+            is_processing = true;
             int_turn++;
             MapFunctions.GameTime+= EvaluationTime;
             print(MapFunctions.GameTime);
@@ -138,12 +151,14 @@ namespace Betadron.Managers
         }
         public void PlayerTurn()
         {
+            Phase = CharacterTurn.none;
             print("Player turn");
             IsPlayerTurn = false;
             EnemyTurn();
         }
         public void EnemyTurn()
         {
+            Phase = CharacterTurn.none;
             print("Enemy turn");
             int status=CharacterManager.ExecuteNPCActions();
             print($"Enemis status {status}");
@@ -154,17 +169,20 @@ namespace Betadron.Managers
         }
         public void EndTurn()
         {
+            Phase = CharacterTurn.EndTurn;
             print("EndTurn turn");
             currentTurn++;
-            SpawnManager.agedItems.Invoke();
+            if(SpawnManager.agedItems!=null)
+                SpawnManager.agedItems.Invoke();
             SpawnManager.SpawnItems();
-            if (currentTurn < TurnToEvaluate)
-                StartCoroutine(DelayNextTurn());
+            StartCoroutine(DelayNextTurn());
+                
         }
 
         private IEnumerator DelayNextTurn()
         {
             yield return new WaitForSeconds(0.1f);
+            is_processing = false;
             StartTurn();
         }
     }
